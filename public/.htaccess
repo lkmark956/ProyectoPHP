@@ -1,0 +1,42 @@
+# Habilitar rewrite engine
+RewriteEngine On
+
+# Establecer la base de URL
+RewriteBase /ProyectoPHP/public/
+
+# Si el archivo o directorio existe, servirlo directamente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todas las peticiones a index.php si no es un archivo específico
+# RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# Permitir acceso directo a archivos CSS, JS e imágenes
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Configuración de seguridad
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevenir MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # XSS Protection
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Desactivar listado de directorios
+Options -Indexes
+
+# Página de error personalizada (opcional)
+# ErrorDocument 404 /ProyectoPHP/public/404.php
+
+# PHP Settings
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value error_log /tmp/php_errors.log
+</IfModule>
