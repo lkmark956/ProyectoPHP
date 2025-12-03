@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use PDO;
 
 /**
- * Clase Category - Gestiona las categorías del blog
+ * Modelo Category - Gestiona las categorías del blog
  */
 class Category {
     private $db;
@@ -16,7 +16,6 @@ class Category {
     
     /**
      * Obtiene todas las categorías
-     * @return array
      */
     public function getAllCategories() {
         $sql = "SELECT * FROM categories ORDER BY name ASC";
@@ -26,7 +25,6 @@ class Category {
     
     /**
      * Obtiene las categorías con el conteo de posts
-     * @return array
      */
     public function getCategoriesWithPostCount() {
         $sql = "SELECT c.*, COUNT(p.id) as post_count 
@@ -41,8 +39,6 @@ class Category {
     
     /**
      * Obtiene una categoría por su ID
-     * @param int $id
-     * @return array|false
      */
     public function getCategoryById($id) {
         $sql = "SELECT * FROM categories WHERE id = :id";
@@ -54,8 +50,6 @@ class Category {
     
     /**
      * Crea una nueva categoría
-     * @param array $data
-     * @return int ID de la categoría creada
      */
     public function createCategory($data) {
         $sql = "INSERT INTO categories (name, slug, description) 
@@ -72,9 +66,6 @@ class Category {
     
     /**
      * Actualiza una categoría existente
-     * @param int $id
-     * @param array $data
-     * @return bool
      */
     public function updateCategory($id, $data) {
         $sql = "UPDATE categories 
@@ -94,8 +85,6 @@ class Category {
     
     /**
      * Elimina una categoría
-     * @param int $id
-     * @return bool
      */
     public function deleteCategory($id) {
         $sql = "DELETE FROM categories WHERE id = :id";
@@ -105,22 +94,22 @@ class Category {
     }
     
     /**
-     * Genera un slug amigable para URLs a partir del nombre
-     * @param string $name
-     * @return string
+     * Genera un slug a partir de un string
      */
-    private function generateSlug($name) {
-        $slug = strtolower($name);
+    private function generateSlug($text) {
+        $text = mb_strtolower($text, 'UTF-8');
         
-        $slug = str_replace(
-            ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü'],
-            ['a', 'e', 'i', 'o', 'u', 'n', 'u'],
-            $slug
-        );
+        $replacements = [
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+            'ñ' => 'n', 'ü' => 'u',
+            'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+        ];
+        $text = strtr($text, $replacements);
         
-        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
-        $slug = trim($slug, '-');
+        $text = preg_replace('/[^a-z0-9\s-]/', '', $text);
+        $text = preg_replace('/[\s-]+/', '-', $text);
+        $text = trim($text, '-');
         
-        return $slug;
+        return $text;
     }
 }

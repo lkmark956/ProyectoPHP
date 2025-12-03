@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * Eliminar usuario - Admin
  */
 
 require_once '../auth.php';
 
-use App\User;
+use App\Models\User;
 
 requireRole('admin');
 

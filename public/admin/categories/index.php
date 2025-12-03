@@ -1,17 +1,17 @@
-<?php
+﻿<?php
 /**
- * Gestión de Categorías - Admin
+ * Gestion de Categorias - Admin
  */
 
 require_once '../auth.php';
 
-use App\Category;
+use App\Models\Category;
 
 $categoryModel = new Category();
 $categories = $categoryModel->getCategoriesWithPostCount();
 
-$pageTitle = 'Gestión de Categorías';
-include '../../../views/admin/header.php';
+$pageTitle = 'Gestion de Categorias';
+include '../../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-page">
@@ -26,9 +26,9 @@ include '../../../views/admin/header.php';
     <div class="alert alert-success">
         <?php
         $messages = [
-            'created' => '✓ Categoría creada exitosamente',
-            'updated' => '✓ Categoría actualizada exitosamente',
-            'deleted' => '✓ Categoría eliminada exitosamente'
+            'created' => '✓ Categoria creada exitosamente',
+            'updated' => '✓ Categoria actualizada exitosamente',
+            'deleted' => '✓ Categoria eliminada exitosamente'
         ];
         echo $messages[$_GET['success']] ?? '✓ Operación exitosa';
         ?>
@@ -43,7 +43,7 @@ include '../../../views/admin/header.php';
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Slug</th>
-                    <th>Descripción</th>
+                    <th>Descripcion</th>
                     <th>Posts</th>
                     <th>Acciones</th>
                 </tr>
@@ -52,14 +52,22 @@ include '../../../views/admin/header.php';
                 <?php foreach ($categories as $category): ?>
                 <tr>
                     <td><?= $category['id'] ?></td>
-                    <td><strong><?= htmlspecialchars($category['name']) ?></strong></td>
+                    <td>
+                        <a href="../posts/index.php?category_id=<?= $category['id'] ?>" style="text-decoration: none; color: inherit;">
+                            <strong><?= htmlspecialchars($category['name']) ?></strong>
+                        </a>
+                    </td>
                     <td><code><?= htmlspecialchars($category['slug']) ?></code></td>
                     <td><?= htmlspecialchars(substr($category['description'] ?? '', 0, 50)) ?><?= strlen($category['description'] ?? '') > 50 ? '...' : '' ?></td>
-                    <td><span class="badge badge-info"><?= $category['post_count'] ?></span></td>
+                    <td>
+                        <a href="../posts/index.php?category_id=<?= $category['id'] ?>" class="badge badge-info" style="text-decoration: none;">
+                            <?= $category['post_count'] ?>
+                        </a>
+                    </td>
                     <td class="actions-cell">
                         <a href="edit.php?id=<?= $category['id'] ?>" class="btn-action btn-edit" title="Editar">✏️</a>
                         <?php if ($category['post_count'] == 0): ?>
-                        <a href="delete.php?id=<?= $category['id'] ?>" class="btn-action btn-delete" title="Eliminar" onclick="return confirm('¿Eliminar esta categoría?')">🗑️</a>
+                        <a href="delete.php?id=<?= $category['id'] ?>" class="btn-action btn-delete" title="Eliminar" onclick="return confirm('¿Eliminar esta Categoria?')">🗑️</a>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -70,11 +78,11 @@ include '../../../views/admin/header.php';
     <?php else: ?>
     <div class="empty-state">
         <div class="empty-icon">📁</div>
-        <h2>No hay categorías</h2>
-        <p>Crea tu primera categoría para organizar los posts</p>
-        <a href="create.php" class="btn btn-primary">Nueva Categoría</a>
+        <h2>No hay Categorias</h2>
+        <p>Crea tu primera Categoria para organizar los posts</p>
+        <a href="create.php" class="btn btn-primary">Nueva Categoria</a>
     </div>
     <?php endif; ?>
 </div>
 
-<?php include '../../../views/admin/footer.php'; ?>
+<?php include '../../../app/Views/admin/footer.php'; ?>

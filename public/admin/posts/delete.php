@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * Eliminar post - Admin
  */
 
 require_once '../auth.php';
 
-use App\Post;
+use App\Models\Post;
 
 if (!canCreateContent()) {
     die('No tienes permisos para acceder a esta página');

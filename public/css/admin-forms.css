@@ -1,0 +1,391 @@
+/* =====================================================
+   ADMIN FORMS - CSS ELEGANTE PARA FORMULARIOS DE EDICIÓN
+   ===================================================== */
+
+/* Layout del formulario */
+.admin-form {
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    border-radius: 24px;
+    padding: 0;
+    box-shadow: 0 20px 60px rgba(44, 62, 80, 0.12);
+    border: 1px solid rgba(192, 135, 111, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #c0876f 0%, #2c3e50 50%, #c0876f 100%);
+    background-size: 200% 100%;
+    animation: shimmerAdmin 3s ease-in-out infinite;
+}
+
+@keyframes shimmerAdmin {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 0;
+    min-height: 600px;
+}
+
+.form-main {
+    padding: 3rem;
+    border-right: 1px solid rgba(192, 135, 111, 0.15);
+    background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+}
+
+.form-sidebar {
+    padding: 2.5rem;
+    background: linear-gradient(180deg, rgba(192, 135, 111, 0.05) 0%, rgba(44, 62, 80, 0.03) 100%);
+    backdrop-filter: blur(10px);
+}
+
+/* Grupos de formulario */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-label.required::after {
+    content: ' *';
+    color: #e74c3c;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e0e6ed;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #c0876f;
+    box-shadow: 0 0 0 4px rgba(192, 135, 111, 0.15);
+    transform: translateY(-2px);
+}
+
+textarea.form-control {
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+textarea.editor-content {
+    min-height: 450px;
+    font-family: 'Courier New', monospace;
+    border-radius: 0 0 12px 12px;
+    border-top: none;
+    resize: vertical;
+    line-height: 1.8;
+}
+
+.form-help {
+    display: block;
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-top: 0.25rem;
+}
+
+/* Editor toolbar */
+.editor-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid rgba(192, 135, 111, 0.2);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.editor-btn {
+    padding: 0.6rem 1rem;
+    background: white;
+    border: 2px solid #e0e6ed;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
+    font-weight: 700;
+    position: relative;
+    overflow: hidden;
+}
+
+.editor-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(192, 135, 111, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.editor-btn:hover::before {
+    width: 200px;
+    height: 200px;
+}
+
+.editor-btn:hover {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    border-color: #2c3e50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+}
+
+.editor-separator {
+    width: 1px;
+    background: #ddd;
+    margin: 0 0.25rem;
+}
+
+/* Checkbox personalizado */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Sidebar sections */
+.sidebar-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    border: 1px solid rgba(192, 135, 111, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #c0876f, #2c3e50);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: left;
+}
+
+.sidebar-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+}
+
+.sidebar-section:hover::before {
+    transform: scaleX(1);
+}
+
+.sidebar-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(192, 135, 111, 0.2);
+    position: relative;
+}
+
+.sidebar-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #c0876f;
+}
+
+/* Info box */
+.info-box {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #c0876f;
+}
+
+.info-box p {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #2c3e50;
+}
+
+.info-box p:last-child {
+    margin-bottom: 0;
+}
+
+/* Imagen preview */
+.current-image-preview {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.current-image-preview a {
+    display: block;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    position: relative;
+    transition: all 0.4s ease;
+}
+
+.current-image-preview a:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+}
+
+.current-image-preview a::after {
+    content: '🔍 Click para ampliar';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 100%);
+    color: white;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.current-image-preview a:hover::after {
+    opacity: 1;
+}
+
+.current-image-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.current-image-preview p {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-top: 0.5rem;
+}
+
+/* Botones del formulario */
+.form-actions-sticky {
+    position: sticky;
+    top: 20px;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+/* Botones mejorados */
+.btn-block {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-block:hover::before {
+    left: 100%;
+}
+
+/* Info box mejorado */
+.info-box {
+    background: linear-gradient(135deg, rgba(192, 135, 111, 0.08) 0%, rgba(44, 62, 80, 0.04) 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #c0876f;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.info-box p {
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-box p strong {
+    color: #c0876f;
+    min-width: 90px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-main {
+        border-right: none;
+        border-bottom: 1px solid rgba(192, 135, 111, 0.15);
+    }
+    
+    .form-actions-sticky {
+        position: static;
+    }
+    
+    .editor-toolbar {
+        gap: 0.25rem;
+    }
+    
+    .editor-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+}

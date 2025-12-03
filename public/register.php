@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Página de registro de usuarios
  */
@@ -6,13 +6,13 @@
 // Cargar configuración
 require_once '../config/config.php';
 
-use App\User;
+use App\Models\User;
 
 $userModel = new User();
 
 // Si ya está logueado, redirigir
 if ($userModel->isLoggedIn()) {
-    header('Location: index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -64,7 +64,7 @@ include VIEWS_PATH . '/header.php';
                 <div class="alert alert-success">
                     <span class="alert-icon">✓</span>
                     <span><?= htmlspecialchars($success) ?></span>
-                    <a href="login.php" class="alert-link">Ir a iniciar sesión →</a>
+                    <a href="<?= BASE_URL ?>/login.php" class="alert-link">Ir a iniciar sesión →</a>
                 </div>
             <?php endif; ?>
 
@@ -158,8 +158,8 @@ include VIEWS_PATH . '/header.php';
             </form>
 
             <div class="auth-footer">
-                <p>¿Ya tienes cuenta? <a href="login.php" class="auth-link">Inicia sesión aquí</a></p>
-                <p><a href="index.php" class="auth-link-secondary">← Volver al inicio</a></p>
+                <p>¿Ya tienes cuenta? <a href="<?= BASE_URL ?>/login.php" class="auth-link">Inicia sesión aquí</a></p>
+                <p><a href="<?= BASE_URL ?>/index.php" class="auth-link-secondary">← Volver al inicio</a></p>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Punto de entrada principal de la aplicación
  */
@@ -6,8 +6,8 @@
 // Cargar configuración (ya incluye session_start())
 require_once '../config/config.php';
 
-use App\Post;
-use App\Category;
+use App\Models\Post;
+use App\Models\Category;
 
 // Instanciar clases
 $postModel = new Post();
@@ -21,7 +21,7 @@ $posts = $postModel->getAllPosts($currentPage, POSTS_PER_PAGE);
 $totalPosts = $postModel->getTotalPosts();
 $totalPages = ceil($totalPosts / POSTS_PER_PAGE);
 
-// Obtener categorías para el sidebar
+// Obtener Categorias para el sidebar
 $categories = $categoryModel->getCategoriesWithPostCount();
 
 // Título de la página
@@ -35,7 +35,7 @@ include VIEWS_PATH . '/header.php';
     <div class="content-wrapper">
         <!-- Contenido principal: Posts -->
         <section class="posts-section">
-            <h1 class="section-title">Últimas Publicaciones</h1>
+            <h1 class="section-title">Ultimas Publicaciones</h1>
             
             <?php if (empty($posts)): ?>
                 <div class="no-posts">
@@ -46,12 +46,9 @@ include VIEWS_PATH . '/header.php';
                     <?php foreach ($posts as $post): ?>
                         <article class="post-card">
                             <?php if (isset($post['image']) && $post['image']): ?>
-                                <div class="post-image">
-                                    <a href="post.php?id=<?= htmlspecialchars($post['id']) ?>">
-                                        <img src="uploads/posts/<?= htmlspecialchars($post['image']) ?>" 
-                                             alt="<?= htmlspecialchars($post['title']) ?>">
-                                    </a>
-                                </div>
+                                <img src="<?= BASE_URL ?>/uploads/posts/<?= htmlspecialchars($post['image']) ?>" 
+                                     alt="<?= htmlspecialchars($post['title']) ?>"
+                                     class="post-thumbnail">
                             <?php endif; ?>
                             
                             <div class="post-content">
@@ -64,7 +61,7 @@ include VIEWS_PATH . '/header.php';
                                     <div class="post-meta">
                                         <span class="post-category">
                                             <i class="icon-folder"></i>
-                                            <?= htmlspecialchars($post['category_name'] ?? 'Sin categoría') ?>
+                                            <?= htmlspecialchars($post['category_name'] ?? 'Sin categoria') ?>
                                         </span>
                                         <span class="post-date">
                                             <i class="icon-clock"></i>
@@ -78,7 +75,7 @@ include VIEWS_PATH . '/header.php';
                                 <div class="post-footer">
                                     <div class="post-author">
                                         <?php if (isset($post['author_avatar']) && $post['author_avatar']): ?>
-                                            <img src="uploads/users/<?= htmlspecialchars($post['author_avatar']) ?>" 
+                                            <img src="<?= BASE_URL ?>/uploads/users/<?= htmlspecialchars($post['author_avatar']) ?>" 
                                                  alt="<?= htmlspecialchars($post['author_name']) ?>"
                                                  class="author-avatar-small">
                                         <?php else: ?>
@@ -89,7 +86,7 @@ include VIEWS_PATH . '/header.php';
                                         <span class="author-name"><?= htmlspecialchars($post['author_name']) ?></span>
                                     </div>
                                     <a href="post.php?id=<?= htmlspecialchars($post['id']) ?>" class="btn-read-more">
-                                        Leer más →
+                                        Leer mas →
                                     </a>
                                 </div>
                             </div>
@@ -128,7 +125,25 @@ include VIEWS_PATH . '/header.php';
         </section>
         
         <!-- Sidebar -->
-        <?php include VIEWS_PATH . '/sidebar.php'; ?>
+        <aside class="sidebar">
+            <div class="sidebar-widget">
+                <h3 class="widget-title">Categorias</h3>
+                <ul class="category-list">
+                    <?php if (!empty($categories)): ?>
+                        <?php foreach ($categories as $category): ?>
+                            <li class="category-item">
+                                <a href="category.php?id=<?= htmlspecialchars($category['id']) ?>" class="category-link">
+                                    <span class="category-name"><?= getCategoryEmoji($category) ?> <?= htmlspecialchars($category['name']) ?></span>
+                                    <span class="post-count"><?= $category['post_count'] ?></span>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li class="no-categories">No hay Categorias disponibles</li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </aside>
     </div>
 </main>
 

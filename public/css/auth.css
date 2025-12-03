@@ -1,0 +1,276 @@
+/* =====================================================
+   ESTILOS DE AUTENTICACIÓN (LOGIN Y REGISTRO)
+   Basado en el estilo profesional y elegante
+   ===================================================== */
+
+.auth-container {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    animation: fadeIn 0.6s ease;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    padding: 3rem;
+    max-width: 480px;
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    background: linear-gradient(135deg, #1a2332 0%, #8b7355 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-subtitle {
+    color: #5a6c7d;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Formulario */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #1a2332;
+    font-size: 0.95rem;
+}
+
+.label-icon {
+    font-size: 1.2rem;
+}
+
+.form-input {
+    padding: 0.9rem 1.2rem;
+    border: 2px solid #e1e4e8;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    font-family: inherit;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #8b7355;
+    box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.1);
+    transform: translateY(-2px);
+}
+
+.form-input::placeholder {
+    color: #a0aec0;
+}
+
+.form-help {
+    color: #5a6c7d;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Botón de envío */
+.btn-submit {
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(26, 35, 50, 0.3);
+    margin-top: 0.5rem;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(26, 35, 50, 0.4);
+}
+
+.btn-submit:active {
+    transform: translateY(-1px);
+}
+
+/* Footer de autenticación */
+.auth-footer {
+    margin-top: 2rem;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #e1e4e8;
+}
+
+.auth-footer p {
+    margin: 0.5rem 0;
+    color: #5a6c7d;
+}
+
+.auth-link {
+    color: #8b7355;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #6f5c43;
+    text-decoration: underline;
+}
+
+.auth-link-secondary {
+    color: #5a6c7d;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.auth-link-secondary:hover {
+    color: #1a2332;
+}
+
+/* Alertas */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: slideDown 0.4s ease;
+}
+
+.alert-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+    border-left: 4px solid #10b981;
+    color: #065f46;
+}
+
+.alert-error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+}
+
+.alert-link {
+    color: #059669;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 0.5rem;
+}
+
+.alert-link:hover {
+    text-decoration: underline;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .auth-title {
+        font-size: 2rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .auth-container,
+    .auth-card,
+    .alert,
+    .form-input,
+    .btn-submit {
+        animation: none;
+        transition: none;
+    }
+    
+    .form-input:focus,
+    .btn-submit:hover {
+        transform: none;
+    }
+}
+
+/* Estados de validación */
+.form-input:invalid:not(:placeholder-shown) {
+    border-color: #ef4444;
+}
+
+.form-input:valid:not(:placeholder-shown) {
+    border-color: #10b981;
+}
+
+/* Loading state para el botón */
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

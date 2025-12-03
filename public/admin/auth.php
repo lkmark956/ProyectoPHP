@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 /**
  * Middleware de autenticación
  * Verifica que el usuario esté logueado antes de acceder al admin
  */
 
-use App\User;
+use App\Models\User;
 
 // Cargar configuración si no está cargada
 if (!defined('BASE_URL')) {
@@ -31,7 +31,7 @@ $currentUser = $userModel->getCurrentUser();
 function requireRole($role) {
     global $currentUser;
     if ($currentUser['role'] !== $role) {
-        die('<h1>Acceso Denegado</h1><p>No tienes permisos para acceder a esta página.</p><a href="../index.php">Volver al inicio</a>');
+        die('<h1>Acceso Denegado</h1><p>No tienes permisos para acceder a esta página.</p><a href="<?= BASE_URL ?>/index.php">Volver al inicio</a>');
     }
 }
 

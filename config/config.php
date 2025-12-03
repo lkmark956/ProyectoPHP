@@ -1,9 +1,8 @@
 <?php
-
-/**
- * Archivo de configuración del proyecto
- * Define constantes para la conexión a la base de datos y rutas del proyecto
- */
+// Configuracion UTF-8
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+ini_set('default_charset', 'UTF-8');
 
 // Configuración de la base de datos
 define('DB_HOST', 'localhost');
@@ -16,12 +15,12 @@ define('DB_CHARSET', 'utf8mb4');
 // Configuración de rutas
 define('ROOT_PATH', dirname(__DIR__));
 define('PUBLIC_PATH', ROOT_PATH . '/public');
-define('VIEWS_PATH', ROOT_PATH . '/views');
+define('VIEWS_PATH', ROOT_PATH . '/app/Views');
 define('UPLOADS_PATH', PUBLIC_PATH . '/uploads');
 
 // URL base del proyecto (sin /public porque index.php ya está en public)
-define('BASE_URL', 'http://localhost/ProyectoPHP/public');
-define('SITE_URL', 'http://localhost/ProyectoPHP/public'); // URL completa
+define('BASE_URL', 'http://localhost:3000/public');
+define('SITE_URL', 'http://localhost:3000/public'); // URL completa
 
 // Configuración de la aplicación
 define('SITE_NAME', 'CMS Blog Personal');
@@ -43,10 +42,28 @@ if (session_status() === PHP_SESSION_NONE) {
 // Autoload de clases
 spl_autoload_register(function ($class) {
     // Convertir namespace a ruta de archivo
-    $class = str_replace('App\\', '', $class);
-    $file = ROOT_PATH . '/src/' . $class . '.php';
     
-    if (file_exists($file)) {
-        require_once $file;
+    // Nuevo sistema MVC (app/)
+    if (strpos($class, 'App\\') === 0) {
+        $classPath = str_replace('App\\', '', $class);
+        $classPath = str_replace('\\', '/', $classPath);
+        
+        $file = ROOT_PATH . '/app/' . $classPath . '.php';
+        
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+    
+    // Soporte legacy (src/) - para compatibilidad temporal
+    $legacyClass = str_replace('App\\', '', $class);
+    $legacyFile = ROOT_PATH . '/src/' . $legacyClass . '.php';
+    
+    if (file_exists($legacyFile)) {
+        require_once $legacyFile;
     }
 });
+
+// Cargar funciones auxiliares
+require_once ROOT_PATH . '/app/helpers.php';

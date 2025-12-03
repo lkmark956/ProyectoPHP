@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Grid Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            background: white;
+            min-height: 500px;
+        }
+        
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+            align-items: start;
+            border: 3px solid blue;
+            padding: 20px;
+        }
+        
+        .posts-section {
+            background: lightgreen;
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        .sidebar {
+            background: lightcoral;
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        .posts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .post-card {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-bottom: 20px;">TEST: Grid Layout 2 Columnas</h1>
+    
+    <main class="main-container">
+        <div class="content-wrapper">
+            <section class="posts-section">
+                <h2>POSTS (IZQUIERDA)</h2>
+                <div class="posts-grid">
+                    <div class="post-card">Post 1</div>
+                    <div class="post-card">Post 2</div>
+                    <div class="post-card">Post 3</div>
+                </div>
+            </section>
+            
+            <aside class="sidebar">
+                <h2>SIDEBAR (DERECHA)</h2>
+                <p>Este es el sidebar</p>
+                <ul>
+                    <li>Categoría 1</li>
+                    <li>Categoría 2</li>
+                    <li>Categoría 3</li>
+                </ul>
+            </aside>
+        </div>
+    </main>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <p><strong>Si ves 2 columnas (verde a la izquierda, roja a la derecha) = CSS funciona</strong></p>
+        <p><strong>Si ves 1 columna (una abajo de otra) = Hay problema con grid</strong></p>
+    </div>
+</body>
+</html>

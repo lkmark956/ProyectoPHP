@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * Listar usuarios - Admin
  */
 
 require_once '../auth.php';
 
-use App\User;
+use App\Models\User;
 
 // Solo admins pueden gestionar usuarios
 requireRole('admin');
@@ -25,8 +25,8 @@ $totalPages = ceil($totalUsers / $perPage);
 $success = $_GET['success'] ?? '';
 $error = $_GET['error'] ?? '';
 
-$pageTitle = 'Gestión de Usuarios';
-include '../../../views/admin/header.php';
+$pageTitle = 'Gestion de Usuarios';
+include '../../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-page">
@@ -74,7 +74,9 @@ include '../../../views/admin/header.php';
                         <tr>
                             <td><?= $user['id'] ?></td>
                             <td>
-                                <strong><?= htmlspecialchars($user['username']) ?></strong>
+                                <a href="view.php?id=<?= $user['id'] ?>" style="text-decoration: none; color: inherit;">
+                                    <strong><?= htmlspecialchars($user['username']) ?></strong>
+                                </a>
                             </td>
                             <td><?= htmlspecialchars($user['email']) ?></td>
                             <td><?= htmlspecialchars($user['full_name'] ?? '-') ?></td>
@@ -102,6 +104,7 @@ include '../../../views/admin/header.php';
                                 <?= $user['last_login'] ? date('d/m/Y H:i', strtotime($user['last_login'])) : 'Nunca' ?>
                             </td>
                             <td class="actions-cell">
+                                <a href="view.php?id=<?= $user['id'] ?>" class="btn-action" title="Ver detalles">👁️</a>
                                 <a href="edit.php?id=<?= $user['id'] ?>" class="btn-action" title="Editar">✏️</a>
                                 <?php if ($user['id'] != $currentUser['id']): ?>
                                     <a href="delete.php?id=<?= $user['id'] ?>" 
@@ -134,4 +137,4 @@ include '../../../views/admin/header.php';
     <?php endif; ?>
 </div>
 
-<?php include '../../../views/admin/footer.php'; ?>
+<?php include '../../../app/Views/admin/footer.php'; ?>

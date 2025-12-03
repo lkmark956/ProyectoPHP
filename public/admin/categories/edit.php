@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 require_once '../auth.php';
-use App\Category;
+use App\Models\Category;
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Location: index.php');
@@ -39,13 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_POST = $category;
 }
 
-$pageTitle = 'Editar Categoría';
-include '../../../views/admin/header.php';
+$pageTitle = 'Editar Categoria';
+include '../../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-page">
     <div class="page-header">
-        <h1>✏️ Editar Categoría</h1>
+        <h1>✏️ Editar Categoria</h1>
         <a href="index.php" class="btn btn-secondary">← Volver</a>
     </div>
 
@@ -53,23 +53,37 @@ include '../../../views/admin/header.php';
     <div class="alert alert-error">⚠️ <?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
-    <form method="POST" class="admin-form" style="max-width: 600px;">
-        <div class="form-group">
-            <label for="name" class="form-label required">Nombre</label>
-            <input type="text" id="name" name="name" class="form-control" required value="<?= htmlspecialchars($_POST['name']) ?>">
-        </div>
+    <div class="category-form-container">
+        <form method="POST" class="admin-form elegant-form">
+            <div class="form-main-content">
+                <div class="form-group">
+                    <label for="name" class="form-label required">Nombre de la Categoría</label>
+                    <input type="text" id="name" name="name" class="form-control" required 
+                           value="<?= htmlspecialchars($_POST['name']) ?>"
+                           placeholder="Ej: Tecnología, Viajes, Comida...">
+                    <small class="form-help">🎯 El nombre aparecerá en el sidebar y las tarjetas de posts</small>
+                </div>
 
-        <div class="form-group">
-            <label for="description" class="form-label">Descripción</label>
-            <textarea id="description" name="description" class="form-control" rows="4"><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
-        </div>
+                <div class="form-group">
+                    <label for="description" class="form-label">Descripción</label>
+                    <textarea id="description" name="description" class="form-control" rows="5"
+                              placeholder="Escribe una breve descripción de esta categoría (opcional)"><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
+                    <small class="form-help">📝 Esta descripción aparecerá en la página de la categoría</small>
+                </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">💾 Actualizar</button>
-            <a href="index.php" class="btn btn-outline">Cancelar</a>
-            <a href="delete.php?id=<?= $categoryId ?>" class="btn btn-danger" onclick="return confirm('¿Eliminar esta categoría?')">🗑️ Eliminar</a>
-        </div>
-    </form>
+                <div class="form-actions-sticky">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>💾</span> Actualizar Categoría
+                    </button>
+                    <a href="index.php" class="btn btn-outline btn-block">Cancelar</a>
+                    <a href="delete.php?id=<?= $categoryId ?>" class="btn btn-danger btn-block" 
+                       onclick="return confirm('¿Eliminar esta categoría?')">
+                        <span>🗑️</span> Eliminar Categoría
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
-<?php include '../../../views/admin/footer.php'; ?>
+<?php include '../../../app/Views/admin/footer.php'; ?>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Página de inicio de sesión
  */
@@ -6,13 +6,13 @@
 // Cargar configuración
 require_once '../config/config.php';
 
-use App\User;
+use App\Models\User;
 
 $userModel = new User();
 
 // Si ya está logueado, redirigir
 if ($userModel->isLoggedIn()) {
-    header('Location: index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($result['success']) {
         // Redirigir al inicio
-        header('Location: index.php');
+        header('Location: ' . BASE_URL . '/index.php');
         exit;
     } else {
         $error = $result['message'];
@@ -100,8 +100,8 @@ include VIEWS_PATH . '/header.php';
             </form>
 
             <div class="auth-footer">
-                <p>¿No tienes cuenta? <a href="register.php" class="auth-link">Regístrate aquí</a></p>
-                <p><a href="index.php" class="auth-link-secondary">← Volver al inicio</a></p>
+                <p>¿No tienes cuenta? <a href="<?= BASE_URL ?>/register.php" class="auth-link">Regístrate aquí</a></p>
+                <p><a href="<?= BASE_URL ?>/index.php" class="auth-link-secondary">← Volver al inicio</a></p>
             </div>
         </div>
     </div>

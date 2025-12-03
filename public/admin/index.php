@@ -1,18 +1,19 @@
-<?php
+﻿<?php
 /**
  * Dashboard del Panel de Administración
  */
 
 require_once 'auth.php';
 
-use App\Post;
-use App\Category;
-use App\User;
+use App\Models\Post;
+use App\Models\Category;
+use App\Models\User;
+use App\Models\Database;
 
 $postModel = new Post();
 $categoryModel = new Category();
 $userModel = new User();
-$db = App\Database::getInstance()->getConnection();
+$db = Database::getInstance()->getConnection();
 
 // Obtener estadísticas
 $totalPosts = $postModel->getTotalPosts();
@@ -26,11 +27,11 @@ $totalUsers = $stmt->fetch()['total'];
 // Posts recientes
 $recentPosts = $postModel->getAllPosts(1, 5);
 
-// Categorías con conteo
+// Categorias con conteo
 $categories = $categoryModel->getCategoriesWithPostCount();
 
 $pageTitle = 'Dashboard';
-include '../../views/admin/header.php';
+include '../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-dashboard">
@@ -53,7 +54,7 @@ include '../../views/admin/header.php';
             <div class="stat-icon">📁</div>
             <div class="stat-content">
                 <div class="stat-number"><?= $totalCategories ?></div>
-                <div class="stat-label">Categorías</div>
+                <div class="stat-label">Categorias</div>
             </div>
         </div>
 
@@ -91,7 +92,7 @@ include '../../views/admin/header.php';
             
             <a href="categories/create.php" class="action-btn btn-secondary">
                 <span class="btn-icon">📁</span>
-                Nueva Categoría
+                Nueva Categoria
             </a>
             
             <?php if (isAdmin()): ?>
@@ -101,7 +102,7 @@ include '../../views/admin/header.php';
             </a>
             <?php endif; ?>
             
-            <a href="../index.php" class="action-btn btn-outline" target="_blank">
+            <a href="<?= BASE_URL ?>/index.php" class="action-btn btn-outline" target="_blank">
                 <span class="btn-icon">🌐</span>
                 Ver Sitio Web
             </a>
@@ -123,13 +124,13 @@ include '../../views/admin/header.php';
                     <div class="post-info">
                         <h3><?= htmlspecialchars($post['title']) ?></h3>
                         <div class="post-meta-info">
-                            <span class="meta-category"><?= htmlspecialchars($post['category_name'] ?? 'Sin categoría') ?></span>
+                            <span class="meta-category"><?= htmlspecialchars($post['category_name'] ?? 'Sin Categoria') ?></span>
                             <span class="meta-date"><?= date('d/m/Y', strtotime($post['created_at'])) ?></span>
                         </div>
                     </div>
                     <div class="post-actions">
                         <a href="posts/edit.php?id=<?= $post['id'] ?>" class="btn-icon-action" title="Editar">✏️</a>
-                        <a href="../post.php?id=<?= $post['id'] ?>" class="btn-icon-action" title="Ver" target="_blank">👁️</a>
+                        <a href="<?= BASE_URL ?>/post.php?id=<?= $post['id'] ?>" class="btn-icon-action" title="Ver" target="_blank">👁️</a>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -139,10 +140,10 @@ include '../../views/admin/header.php';
             <?php endif; ?>
         </div>
 
-        <!-- Categorías -->
+        <!-- Categorias -->
         <div class="dashboard-section">
             <div class="section-header">
-                <h2>Categorías</h2>
+                <h2>Categorias</h2>
                 <a href="categories/index.php" class="section-link">Ver todas →</a>
             </div>
             
@@ -158,10 +159,10 @@ include '../../views/admin/header.php';
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <p class="empty-message">No hay categorías. <a href="categories/create.php">Crea una</a></p>
+            <p class="empty-message">No hay Categorias. <a href="categories/create.php">Crea una</a></p>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
-<?php include '../../views/admin/footer.php'; ?>
+<?php include '../../app/Views/admin/footer.php'; ?>

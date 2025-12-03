@@ -1,0 +1,269 @@
+/* =====================================================
+   ANIMACIONES GLOBALES - FÁCIL DE ELIMINAR
+   Para eliminar: simplemente borra este archivo y quita 
+   la referencia en header.php
+   ===================================================== */
+
+/* === ANIMACIONES DE ENTRADA === */
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Up */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Down */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Left */
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scale In */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* === APLICAR ANIMACIONES A ELEMENTOS === */
+
+/* Header con fade in */
+.site-header {
+    animation: slideDown 0.6s ease-out;
+}
+
+/* Main container con fade in */
+.main-container {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Posts con stagger effect */
+.post-card {
+    animation: slideUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.post-card:nth-child(1) { animation-delay: 0.1s; }
+.post-card:nth-child(2) { animation-delay: 0.2s; }
+.post-card:nth-child(3) { animation-delay: 0.3s; }
+.post-card:nth-child(4) { animation-delay: 0.4s; }
+.post-card:nth-child(5) { animation-delay: 0.5s; }
+.post-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Sidebar con slide left */
+.sidebar {
+    animation: slideLeft 0.6s ease-out 0.3s;
+    animation-fill-mode: both;
+}
+
+/* Formularios con scale in */
+.create-post-card,
+.profile-card {
+    animation: scaleIn 0.5s ease-out;
+}
+
+/* Post completo con fade in */
+.post-full {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* === ANIMACIÓN DE CARGA === */
+
+/* Spinner loader */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f0f0f0;
+    border-top-color: #c0876f;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Barra de progreso en la parte superior */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #c0876f 0%, #2c3e50 50%, #c0876f 100%);
+    background-size: 200% 100%;
+    z-index: 10000;
+    animation: progressSlide 2s ease-in-out infinite;
+}
+
+@keyframes progressSlide {
+    0% {
+        width: 0%;
+        background-position: 0% 50%;
+    }
+    50% {
+        width: 70%;
+        background-position: 100% 50%;
+    }
+    100% {
+        width: 100%;
+        background-position: 0% 50%;
+    }
+}
+
+/* === TRANSICIONES DE PÁGINA === */
+
+/* Fade out al hacer click en links */
+body.page-transition {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+/* Efecto al cargar nueva página */
+body {
+    animation: pageEnter 0.4s ease-out;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === ANIMACIONES HOVER MEJORADAS === */
+
+/* Botones con pulse */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+    animation: pulse 0.3s ease;
+}
+
+/* Cards con float - DESACTIVADO */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* .post-card:hover {
+    animation: float 2s ease-in-out infinite;
+} */
+
+/* Animación de elevación al hacer hover en posts */
+.post-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.post-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(26, 35, 50, 0.25) !important;
+}
+
+/* === ALERTS CON ANIMACIÓN === */
+
+.alert {
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.alert-error {
+    animation: shake 0.5s ease, slideDown 0.4s ease-out;
+}
+
+/* === DISABLE PARA USUARIOS QUE PREFIEREN NO ANIMACIONES === */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

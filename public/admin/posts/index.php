@@ -1,11 +1,12 @@
-<?php
+﻿<?php
 /**
  * Listar todos los posts - Admin
  */
 
 require_once '../auth.php';
 
-use App\Post;
+use App\Models\Post;
+use App\Models\Database;
 
 if (!canCreateContent()) {
     die('No tienes permisos para acceder a esta página');
@@ -17,37 +18,74 @@ $postModel = new Post();
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $perPage = 10;
 
+// Filtro por categoría
+$categoryId = isset($_GET['category_id']) ? intval($_GET['category_id']) : null;
+
 // Obtener todos los posts (incluyendo no publicados)
-$db = App\Database::getInstance()->getConnection();
+$db = Database::getInstance()->getConnection();
 $offset = ($page - 1) * $perPage;
+
+// Construir query con filtro opcional
+$whereClauses = [];
+$params = [':limit' => $perPage, ':offset' => $offset];
+
+if ($categoryId) {
+    $whereClauses[] = "p.category_id = :category_id";
+    $params[':category_id'] = $categoryId;
+}
+
+$whereSQL = !empty($whereClauses) ? "WHERE " . implode(" AND ", $whereClauses) : "";
 
 $sql = "SELECT p.*, c.name as category_name, u.username as author_name 
         FROM posts p 
         LEFT JOIN categories c ON p.category_id = c.id 
         LEFT JOIN users u ON p.author_id = u.id 
+        $whereSQL
         ORDER BY p.created_at DESC 
         LIMIT :limit OFFSET :offset";
 
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+}
 $stmt->execute();
 $posts = $stmt->fetchAll();
 
-// Total de posts
-$totalPosts = $db->query("SELECT COUNT(*) as total FROM posts")->fetch()['total'];
+// Total de posts (con filtro)
+$countSQL = "SELECT COUNT(*) as total FROM posts p " . $whereSQL;
+$countStmt = $db->prepare($countSQL);
+if ($categoryId) {
+    $countStmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+}
+$countStmt->execute();
+$totalPosts = $countStmt->fetch()['total'];
+
+// Obtener nombre de categoría si hay filtro
+$categoryName = '';
+if ($categoryId) {
+    $catStmt = $db->prepare("SELECT name FROM categories WHERE id = :id");
+    $catStmt->bindValue(':id', $categoryId, PDO::PARAM_INT);
+    $catStmt->execute();
+    $catResult = $catStmt->fetch();
+    $categoryName = $catResult ? $catResult['name'] : '';
+}
 $totalPages = ceil($totalPosts / $perPage);
 
-$pageTitle = 'Gestión de Posts';
-include '../../../views/admin/header.php';
+$pageTitle = 'Gestion de Posts';
+include '../../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-page">
     <div class="page-header">
-        <h1>📝 Gestión de Posts</h1>
-        <a href="create.php" class="btn btn-primary">
-            <span>➕</span> Crear Nuevo Post
-        </a>
+        <h1>📝 Gestión de Posts<?php if ($categoryName): ?> - <?= htmlspecialchars($categoryName) ?><?php endif; ?></h1>
+        <div>
+            <?php if ($categoryId): ?>
+                <a href="index.php" class="btn btn-secondary" style="margin-right: 10px;">← Ver todos</a>
+            <?php endif; ?>
+            <a href="create.php" class="btn btn-primary">
+                <span>➕</span> Crear Nuevo Post
+            </a>
+        </div>
     </div>
 
     <?php if (isset($_GET['success'])): ?>
@@ -69,8 +107,8 @@ include '../../../views/admin/header.php';
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Título</th>
-                    <th>Categoría</th>
+                    <th>Titulo</th>
+                    <th>Categoria</th>
                     <th>Autor</th>
                     <th>Estado</th>
                     <th>Fecha</th>
@@ -87,7 +125,7 @@ include '../../../views/admin/header.php';
                     </td>
                     <td>
                         <span class="badge badge-category">
-                            <?= htmlspecialchars($post['category_name'] ?? 'Sin categoría') ?>
+                            <?= htmlspecialchars($post['category_name'] ?? 'Sin Categoria') ?>
                         </span>
                     </td>
                     <td><?= htmlspecialchars($post['author_name']) ?></td>
@@ -129,11 +167,11 @@ include '../../../views/admin/header.php';
     <?php else: ?>
     <div class="empty-state">
         <div class="empty-icon">📝</div>
-        <h2>No hay posts aún</h2>
+        <h2>No hay posts Aun</h2>
         <p>Comienza creando tu primer post</p>
         <a href="create.php" class="btn btn-primary">Crear Nuevo Post</a>
     </div>
     <?php endif; ?>
 </div>
 
-<?php include '../../../views/admin/footer.php'; ?>
+<?php include '../../../app/Views/admin/footer.php'; ?>

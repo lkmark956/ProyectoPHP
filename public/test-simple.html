@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple - Post Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+        
+        .posts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .post-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .post-content {
+            padding: 1.5rem;
+        }
+        
+        .sidebar {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            height: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 30px;">TEST SIMPLE - ¿La imagen está contenida?</h1>
+        
+        <div class="content-wrapper">
+            <div class="posts-grid">
+                <article class="post-card">
+                    <img src="uploads/posts/post_692f6e026a411_1764716034.jpg" alt="Test">
+                    <div class="post-content">
+                        <h2>Título del Post</h2>
+                        <p>Este es el contenido del post con una imagen arriba.</p>
+                    </div>
+                </article>
+                
+                <article class="post-card">
+                    <img src="uploads/posts/post_692f6e026a411_1764716034.jpg" alt="Test">
+                    <div class="post-content">
+                        <h2>Otro Post</h2>
+                        <p>Contenido de otro post.</p>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="sidebar">
+                <h3>Sidebar</h3>
+                <p>Contenido del sidebar a la derecha</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

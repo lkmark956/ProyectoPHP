@@ -1,18 +1,220 @@
 <?php
 /**
- * Script de verificación del sistema
- * Ejecutar SOLO DURANTE EL DESARROLLO para verificar configuración
- * ELIMINAR EN PRODUCCIÓN por seguridad
+ * Script de Verificación del Sistema
+ * Comprueba que todos los componentes estén correctamente configurados
  */
 
-// Cargar configuración
-require_once __DIR__ . '/config/config.php';
+// Configurar reporte de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-use App\Database;
-use App\User;
-use App\Post;
-use App\Category;
-use App\ImageUpload;
+// Cargar configuración
+require_once 'config/config.php';
+
+use App\Models\Database;
+use App\Models\User;
+use App\Models\Post;
+use App\Models\Category;
+use App\Models\Comment;
+
+$checks = [];
+$errors = [];
+$warnings = [];
+
+// =====================================================
+// FUNCIONES AUXILIARES
+// =====================================================
+
+function checkPass($description) {
+    global $checks;
+    $checks[] = ['status' => 'pass', 'message' => $description];
+}
+
+function checkFail($description, $details = '') {
+    global $checks, $errors;
+    $checks[] = ['status' => 'fail', 'message' => $description, 'details' => $details];
+    $errors[] = $description;
+}
+
+function checkWarning($description, $details = '') {
+    global $checks, $warnings;
+    $checks[] = ['status' => 'warning', 'message' => $description, 'details' => $details];
+    $warnings[] = $description;
+}
+
+// =====================================================
+// VERIFICACIONES
+// =====================================================
+
+// 1. Verificar configuración
+if (defined('BASE_URL') && defined('DB_HOST') && defined('DB_NAME')) {
+    checkPass('✅ Archivo de configuración cargado correctamente');
+} else {
+    checkFail('❌ Error en archivo de configuración', 'Faltan constantes importantes');
+}
+
+// 2. Verificar conexión a base de datos
+try {
+    $db = Database::getInstance()->getConnection();
+    checkPass('✅ Conexión a base de datos exitosa');
+} catch (Exception $e) {
+    checkFail('❌ Error de conexión a base de datos', $e->getMessage());
+}
+
+// 3. Verificar tablas existentes
+if (isset($db)) {
+    $requiredTables = ['users', 'posts', 'categories', 'comments'];
+    $stmt = $db->query("SHOW TABLES");
+    $existingTables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    foreach ($requiredTables as $table) {
+        if (in_array($table, $existingTables)) {
+            checkPass("✅ Tabla '$table' existe");
+            
+            // Contar registros
+            $count = $db->query("SELECT COUNT(*) FROM $table")->fetchColumn();
+            if ($table === 'comments' && $count === 0) {
+                checkWarning("⚠️ Tabla '$table' está vacía (normal si es nueva)", "0 registros");
+            } else {
+                checkPass("   └─ $count registros en '$table'");
+            }
+        } else {
+            checkFail("❌ Tabla '$table' NO existe", "Ejecuta cms_blog_COMPLETO.sql");
+        }
+    }
+}
+
+// 4. Verificar modelos
+$models = [
+    'User' => User::class,
+    'Post' => Post::class,
+    'Category' => Category::class,
+    'Comment' => Comment::class
+];
+
+foreach ($models as $name => $class) {
+    if (class_exists($class)) {
+        checkPass("✅ Modelo $name disponible");
+    } else {
+        checkFail("❌ Modelo $name NO encontrado", "Verifica app/Models/$name.php");
+    }
+}
+
+// 5. Verificar directorios y permisos
+$directories = [
+    'public/uploads/users' => 'Avatares de usuarios',
+    'public/uploads/posts' => 'Imágenes de posts',
+    'public/css' => 'Archivos CSS',
+    'app/Views' => 'Vistas',
+    'app/Models' => 'Modelos'
+];
+
+foreach ($directories as $dir => $description) {
+    $fullPath = ROOT_PATH . '/' . $dir;
+    if (is_dir($fullPath)) {
+        if (is_writable($fullPath)) {
+            checkPass("✅ Directorio '$description' existe y es escribible");
+        } else {
+            checkWarning("⚠️ Directorio '$description' existe pero NO es escribible", $fullPath);
+        }
+    } else {
+        checkFail("❌ Directorio '$description' NO existe", $fullPath);
+    }
+}
+
+// 6. Verificar archivos CSS críticos
+$cssFiles = [
+    'style-clean.css' => 'Estilos principales',
+    'animations.css' => 'Animaciones',
+    'colors-professional.css' => 'Colores profesionales',
+    'auth.css' => 'Login y registro',
+    'comments.css' => 'Sistema de comentarios',
+    'admin.css' => 'Panel admin',
+    'admin-professional.css' => 'Estilos admin elegantes'
+];
+
+foreach ($cssFiles as $file => $description) {
+    $fullPath = PUBLIC_PATH . '/css/' . $file;
+    if (file_exists($fullPath)) {
+        checkPass("✅ CSS '$description' disponible");
+    } else {
+        checkWarning("⚠️ CSS '$description' NO encontrado", $file);
+    }
+}
+
+// 7. Verificar páginas principales
+$pages = [
+    'index.php' => 'Página principal',
+    'login.php' => 'Inicio de sesión',
+    'register.php' => 'Registro',
+    'post.php' => 'Vista de post',
+    'profile.php' => 'Perfil de usuario',
+    'admin/index.php' => 'Dashboard admin'
+];
+
+foreach ($pages as $file => $description) {
+    $fullPath = PUBLIC_PATH . '/' . $file;
+    if (file_exists($fullPath)) {
+        checkPass("✅ Página '$description' existe");
+    } else {
+        checkFail("❌ Página '$description' NO existe", $file);
+    }
+}
+
+// 8. Verificar archivos de comentarios
+$commentFiles = [
+    'comment_create.php' => 'Crear comentario',
+    'comment_edit.php' => 'Editar comentario',
+    'comment_delete.php' => 'Eliminar comentario'
+];
+
+foreach ($commentFiles as $file => $description) {
+    $fullPath = PUBLIC_PATH . '/' . $file;
+    if (file_exists($fullPath)) {
+        checkPass("✅ Sistema de comentarios: '$description'");
+    } else {
+        checkFail("❌ Archivo de comentarios '$description' NO existe", $file);
+    }
+}
+
+// 9. Verificar helpers.php
+if (file_exists(ROOT_PATH . '/app/helpers.php')) {
+    checkPass("✅ Archivo helpers.php existe");
+    if (function_exists('getCategoryEmoji')) {
+        checkPass("   └─ Función getCategoryEmoji() disponible");
+    } else {
+        checkWarning("⚠️ Función getCategoryEmoji() NO encontrada");
+    }
+} else {
+    checkFail("❌ Archivo helpers.php NO existe");
+}
+
+// 10. Verificar estructura de admin
+$adminPages = [
+    'categories/index.php' => 'Gestión de categorías',
+    'posts/index.php' => 'Gestión de posts',
+    'users/index.php' => 'Gestión de usuarios',
+    'users/view.php' => 'Vista de usuario'
+];
+
+foreach ($adminPages as $file => $description) {
+    $fullPath = PUBLIC_PATH . '/admin/' . $file;
+    if (file_exists($fullPath)) {
+        checkPass("✅ Admin: '$description'");
+    } else {
+        checkWarning("⚠️ Página admin '$description' NO encontrada", $file);
+    }
+}
+
+// =====================================================
+// GENERAR REPORTE HTML
+// =====================================================
+
+$totalChecks = count($checks);
+$passCount = count(array_filter($checks, fn($c) => $c['status'] === 'pass'));
+$failCount = count($errors);
+$warningCount = count($warnings);
+$successRate = round(($passCount / $totalChecks) * 100, 1);
 
 ?>
 <!DOCTYPE html>
@@ -23,261 +225,195 @@ use App\ImageUpload;
     <title>Verificación del Sistema - CMS Blog</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 2rem; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 { color: #1e293b; margin-bottom: 2rem; text-align: center; }
-        .section { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .section h2 { color: #4f46e5; margin-bottom: 1rem; font-size: 1.3rem; border-bottom: 2px solid #4f46e5; padding-bottom: 0.5rem; }
-        .check-item { padding: 0.8rem; margin: 0.5rem 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .check-item.success { background: #d1fae5; border-left: 4px solid #10b981; }
-        .check-item.error { background: #fee2e2; border-left: 4px solid #ef4444; }
-        .check-item.warning { background: #fef3c7; border-left: 4px solid #f59e0b; }
-        .status { font-weight: bold; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.9rem; }
-        .status.ok { background: #10b981; color: white; }
-        .status.fail { background: #ef4444; color: white; }
-        .status.warn { background: #f59e0b; color: white; }
-        .info { color: #64748b; font-size: 0.9rem; margin-top: 0.5rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        table th, table td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        table th { background: #f8fafc; color: #1e293b; font-weight: 600; }
-        .btn { display: inline-block; padding: 0.8rem 1.5rem; background: #4f46e5; color: white; text-decoration: none; border-radius: 6px; margin-top: 1rem; }
-        .btn:hover { background: #4338ca; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eff2f5 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+        .stat-label {
+            color: #5a6c7d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .success { color: #10b981; }
+        .warning { color: #f59e0b; }
+        .error { color: #ef4444; }
+        .checks {
+            padding: 30px;
+        }
+        .check-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .check-item.pass {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            border-color: #10b981;
+        }
+        .check-item.fail {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border-color: #ef4444;
+        }
+        .check-item.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+            border-color: #f59e0b;
+        }
+        .details {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #5a6c7d;
+            font-family: 'Courier New', monospace;
+        }
+        .actions {
+            padding: 30px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 5px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 35, 50, 0.3);
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e1e4e8;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 30px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            transition: width 1s ease;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔍 Verificación del Sistema CMS Blog</h1>
-        
-        <!-- Configuración PHP -->
-        <div class="section">
-            <h2>⚙️ Configuración PHP</h2>
-            <?php
-            $phpVersion = phpversion();
-            $phpOk = version_compare($phpVersion, '7.4.0', '>=');
-            ?>
-            <div class="check-item <?= $phpOk ? 'success' : 'error' ?>">
-                <span>Versión de PHP: <?= $phpVersion ?></span>
-                <span class="status <?= $phpOk ? 'ok' : 'fail' ?>"><?= $phpOk ? '✓ OK' : '✗ Requiere 7.4+' ?></span>
+        <div class="header">
+            <h1>🔍 Verificación del Sistema</h1>
+            <p>CMS Blog Personal - Estado del Proyecto</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number success"><?= $passCount ?></div>
+                <div class="stat-label">Verificaciones Exitosas</div>
             </div>
-            
-            <?php
-            $extensions = ['pdo', 'pdo_mysql', 'mbstring', 'gd', 'fileinfo'];
-            foreach ($extensions as $ext):
-                $loaded = extension_loaded($ext);
-            ?>
-            <div class="check-item <?= $loaded ? 'success' : 'error' ?>">
-                <span>Extensión: <?= $ext ?></span>
-                <span class="status <?= $loaded ? 'ok' : 'fail' ?>"><?= $loaded ? '✓ Cargada' : '✗ No disponible' ?></span>
+            <div class="stat-card">
+                <div class="stat-number warning"><?= $warningCount ?></div>
+                <div class="stat-label">Advertencias</div>
             </div>
-            <?php endforeach; ?>
-            
-            <?php
-            $uploadMax = ini_get('upload_max_filesize');
-            $postMax = ini_get('post_max_size');
-            ?>
-            <div class="check-item success">
-                <span>Límite de subida: <?= $uploadMax ?> | Post max: <?= $postMax ?></span>
-                <span class="status ok">✓ OK</span>
+            <div class="stat-card">
+                <div class="stat-number error"><?= $failCount ?></div>
+                <div class="stat-label">Errores Críticos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="background: linear-gradient(135deg, #1a2332 0%, #8b7355 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><?= $successRate ?>%</div>
+                <div class="stat-label">Tasa de Éxito</div>
             </div>
         </div>
-        
-        <!-- Conexión a Base de Datos -->
-        <div class="section">
-            <h2>💾 Conexión a Base de Datos</h2>
-            <?php
-            try {
-                $db = Database::getInstance()->getConnection();
-                $dbConnected = true;
-                
-                // Verificar tablas
-                $tables = ['users', 'posts', 'categories'];
-                $tablesExist = [];
-                
-                foreach ($tables as $table) {
-                    $stmt = $db->query("SHOW TABLES LIKE '$table'");
-                    $tablesExist[$table] = $stmt->rowCount() > 0;
-                }
-                
-                // Contar registros
-                $counts = [];
-                foreach ($tables as $table) {
-                    if ($tablesExist[$table]) {
-                        $stmt = $db->query("SELECT COUNT(*) as count FROM $table");
-                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $counts[$table] = $result['count'];
-                    }
-                }
-                
-            } catch (Exception $e) {
-                $dbConnected = false;
-                $dbError = $e->getMessage();
-            }
-            ?>
-            
-            <div class="check-item <?= $dbConnected ? 'success' : 'error' ?>">
-                <span>Conexión MySQL</span>
-                <span class="status <?= $dbConnected ? 'ok' : 'fail' ?>"><?= $dbConnected ? '✓ Conectado' : '✗ Error' ?></span>
-            </div>
-            
-            <?php if ($dbConnected): ?>
-                <?php foreach ($tables as $table): ?>
-                <div class="check-item <?= $tablesExist[$table] ? 'success' : 'error' ?>">
-                    <span>Tabla: <?= $table ?> <?= $tablesExist[$table] ? "({$counts[$table]} registros)" : '' ?></span>
-                    <span class="status <?= $tablesExist[$table] ? 'ok' : 'fail' ?>"><?= $tablesExist[$table] ? '✓ Existe' : '✗ No existe' ?></span>
-                </div>
-                <?php endforeach; ?>
-                
-                <?php
-                // Verificar columnas de imágenes
-                $stmt = $db->query("DESCRIBE users");
-                $userColumns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                $hasAvatar = in_array('avatar', $userColumns);
-                
-                $stmt = $db->query("DESCRIBE posts");
-                $postColumns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                $hasImage = in_array('image', $postColumns);
-                ?>
-                
-                <div class="check-item <?= $hasAvatar ? 'success' : 'warning' ?>">
-                    <span>Columna 'avatar' en tabla users</span>
-                    <span class="status <?= $hasAvatar ? 'ok' : 'warn' ?>"><?= $hasAvatar ? '✓ Existe' : '⚠ Falta' ?></span>
-                </div>
-                
-                <div class="check-item <?= $hasImage ? 'success' : 'warning' ?>">
-                    <span>Columna 'image' en tabla posts</span>
-                    <span class="status <?= $hasImage ? 'ok' : 'warn' ?>"><?= $hasImage ? '✓ Existe' : '⚠ Falta' ?></span>
-                </div>
-                
-                <?php if (!$hasAvatar || !$hasImage): ?>
-                <div class="info">
-                    ⚠️ Ejecuta el archivo <strong>update_database.sql</strong> para agregar las columnas de imágenes.
-                </div>
-                <?php endif; ?>
-                
-            <?php else: ?>
-                <div class="info">
-                    ❌ Error de conexión: <?= htmlspecialchars($dbError) ?>
-                </div>
-            <?php endif; ?>
+
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: <?= $successRate ?>%;"></div>
         </div>
-        
-        <!-- Archivos y Clases -->
-        <div class="section">
-            <h2>📁 Archivos y Clases</h2>
-            <?php
-            $classes = [
-                'Database' => ROOT_PATH . '/src/Database.php',
-                'User' => ROOT_PATH . '/src/User.php',
-                'Post' => ROOT_PATH . '/src/Post.php',
-                'Category' => ROOT_PATH . '/src/Category.php',
-                'ImageUpload' => ROOT_PATH . '/src/ImageUpload.php'
-            ];
-            
-            foreach ($classes as $className => $file):
-                $exists = file_exists($file);
-            ?>
-            <div class="check-item <?= $exists ? 'success' : 'error' ?>">
-                <span>Clase: <?= $className ?></span>
-                <span class="status <?= $exists ? 'ok' : 'fail' ?>"><?= $exists ? '✓ Existe' : '✗ No existe' ?></span>
-            </div>
+
+        <div class="checks">
+            <h2 style="margin-bottom: 20px; color: #1a2332;">📋 Resultados de Verificación</h2>
+            <?php foreach ($checks as $check): ?>
+                <div class="check-item <?= $check['status'] ?>">
+                    <?= htmlspecialchars($check['message']) ?>
+                    <?php if (isset($check['details']) && $check['details']): ?>
+                        <div class="details">└─ <?= htmlspecialchars($check['details']) ?></div>
+                    <?php endif; ?>
+                </div>
             <?php endforeach; ?>
         </div>
-        
-        <!-- Directorios y Permisos -->
-        <div class="section">
-            <h2>📂 Directorios y Permisos</h2>
-            <?php
-            $directories = [
-                'Uploads' => PUBLIC_PATH . '/uploads',
-                'Uploads/Users' => PUBLIC_PATH . '/uploads/users',
-                'Uploads/Posts' => PUBLIC_PATH . '/uploads/posts',
-                'Views' => VIEWS_PATH,
-                'CSS' => PUBLIC_PATH . '/css'
-            ];
-            
-            foreach ($directories as $name => $dir):
-                $exists = is_dir($dir);
-                $writable = $exists ? is_writable($dir) : false;
-            ?>
-            <div class="check-item <?= ($exists && $writable) ? 'success' : ($exists ? 'warning' : 'error') ?>">
-                <span><?= $name ?>: <?= $dir ?></span>
-                <span class="status <?= ($exists && $writable) ? 'ok' : ($exists ? 'warn' : 'fail') ?>">
-                    <?= $exists ? ($writable ? '✓ OK' : '⚠ Solo lectura') : '✗ No existe' ?>
-                </span>
+
+        <?php if ($failCount > 0): ?>
+            <div style="padding: 30px; background: #fee; border-top: 2px solid #ef4444;">
+                <h3 style="color: #991b1b; margin-bottom: 15px;">⚠️ Acción Requerida</h3>
+                <p style="color: #991b1b;">Se encontraron <strong><?= $failCount ?></strong> errores críticos que deben ser corregidos:</p>
+                <ul style="margin: 15px 0; padding-left: 30px; color: #991b1b;">
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <?php endforeach; ?>
-        </div>
-        
-        <!-- Archivos de Configuración -->
-        <div class="section">
-            <h2>🔧 Configuración del Sistema</h2>
-            <table>
-                <tr>
-                    <th>Constante</th>
-                    <th>Valor</th>
-                </tr>
-                <tr><td>DB_HOST</td><td><?= DB_HOST ?></td></tr>
-                <tr><td>DB_NAME</td><td><?= DB_NAME ?></td></tr>
-                <tr><td>DB_USER</td><td><?= DB_USER ?></td></tr>
-                <tr><td>SITE_NAME</td><td><?= SITE_NAME ?></td></tr>
-                <tr><td>POSTS_PER_PAGE</td><td><?= POSTS_PER_PAGE ?></td></tr>
-                <tr><td>ROOT_PATH</td><td><?= ROOT_PATH ?></td></tr>
-                <tr><td>PUBLIC_PATH</td><td><?= PUBLIC_PATH ?></td></tr>
-            </table>
-        </div>
-        
-        <!-- URLs del Sistema -->
-        <div class="section">
-            <h2>🌐 Enlaces del Sistema</h2>
-            <div class="check-item success">
-                <span>Página Principal</span>
-                <a href="public/index.php" class="status ok" target="_blank">Abrir →</a>
+        <?php elseif ($warningCount > 0): ?>
+            <div style="padding: 30px; background: #fef3c7; border-top: 2px solid #f59e0b;">
+                <h3 style="color: #92400e; margin-bottom: 15px;">⚠️ Advertencias</h3>
+                <p style="color: #92400e;">El sistema funciona pero hay <strong><?= $warningCount ?></strong> advertencias:</p>
+                <ul style="margin: 15px 0; padding-left: 30px; color: #92400e;">
+                    <?php foreach ($warnings as $warning): ?>
+                        <li><?= htmlspecialchars($warning) ?></li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <div class="check-item success">
-                <span>Login</span>
-                <a href="public/login.php" class="status ok" target="_blank">Abrir →</a>
+        <?php else: ?>
+            <div style="padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%); border-top: 2px solid #10b981;">
+                <h3 style="color: #065f46; margin-bottom: 15px;">🎉 ¡Sistema Completamente Funcional!</h3>
+                <p style="color: #065f46;">Todas las verificaciones pasaron exitosamente. El proyecto está listo para usarse.</p>
             </div>
-            <div class="check-item success">
-                <span>Registro</span>
-                <a href="public/register.php" class="status ok" target="_blank">Abrir →</a>
-            </div>
-            <div class="check-item success">
-                <span>Panel Admin</span>
-                <a href="public/admin/" class="status ok" target="_blank">Abrir →</a>
-            </div>
-        </div>
-        
-        <!-- Resumen Final -->
-        <div class="section">
-            <h2>✅ Resumen</h2>
-            <?php
-            $allOk = $phpOk && $dbConnected && 
-                     array_reduce($tablesExist, function($carry, $item) { return $carry && $item; }, true) &&
-                     array_reduce($classes, function($carry, $file) { return $carry && file_exists($file); }, true);
-            ?>
-            <?php if ($allOk): ?>
-                <div class="check-item success">
-                    <span><strong>🎉 Sistema listo para usar</strong></span>
-                    <span class="status ok">✓ TODO OK</span>
-                </div>
-                <div class="info">
-                    El sistema está correctamente configurado. Puedes empezar a usar el CMS.
-                </div>
-                <a href="public/index.php" class="btn">Ir al Blog →</a>
-            <?php else: ?>
-                <div class="check-item error">
-                    <span><strong>⚠️ Requiere atención</strong></span>
-                    <span class="status fail">Errores detectados</span>
-                </div>
-                <div class="info">
-                    Revisa los errores marcados arriba y corrígelos antes de continuar.
-                </div>
-            <?php endif; ?>
-            
-            <div class="info" style="margin-top: 1.5rem; padding: 1rem; background: #fef3c7; border-radius: 6px;">
-                <strong>⚠️ IMPORTANTE:</strong> Este archivo es solo para desarrollo. 
-                <strong>ELIMÍNALO</strong> antes de subir el proyecto a producción por razones de seguridad.
-            </div>
+        <?php endif; ?>
+
+        <div class="actions">
+            <a href="public/index.php" class="btn btn-primary">🏠 Ir al Sitio</a>
+            <a href="public/admin/" class="btn btn-primary">⚙️ Panel Admin</a>
+            <a href="setup_comments.php" class="btn btn-primary">💬 Configurar Comentarios</a>
         </div>
     </div>
 </body>

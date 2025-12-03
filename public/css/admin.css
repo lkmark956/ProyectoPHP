@@ -6,10 +6,12 @@
 :root {
     --admin-sidebar-width: 250px;
     --admin-header-height: 70px;
-    --admin-bg: #f8f9fa;
+    --admin-bg: #f5f6f8;
     --admin-sidebar-bg: #2c3e50;
-    --admin-sidebar-hover: #34495e;
+    --admin-sidebar-hover: #3d5264;
     --admin-text-sidebar: #ecf0f1;
+    --admin-card-bg: #ffffff;
+    --admin-border: #e1e4e8;
 }
 
 /* Body del admin */
@@ -198,19 +200,23 @@
 }
 
 .stat-posts .stat-icon {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #3d5264 100%);
+    color: white;
 }
 
 .stat-categories .stat-icon {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(135deg, #c0876f 0%, #a97560 100%);
+    color: white;
 }
 
 .stat-users .stat-icon {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+    color: white;
 }
 
 .stat-views .stat-icon {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    background: linear-gradient(135deg, #5a6c7d 0%, #6b7f92 100%);
+    color: white;
 }
 
 .stat-number {
@@ -259,17 +265,17 @@
 }
 
 .action-btn.btn-primary {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #2c3e50 0%, #3d5264 100%);
     color: white;
 }
 
 .action-btn.btn-secondary {
-    background: var(--gradient-secondary);
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
     color: white;
 }
 
 .action-btn.btn-accent {
-    background: var(--gradient-accent);
+    background: linear-gradient(135deg, #c0876f 0%, #a97560 100%);
     color: white;
 }
 
@@ -471,13 +477,13 @@
 }
 
 .btn-primary {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #2c3e50 0%, #3d5264 100%);
     color: white;
     box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {
-    box-shadow: var(--shadow-color);
+    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.3);
     transform: translateY(-2px);
 }
 
@@ -516,7 +522,7 @@
 }
 
 .admin-table thead {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #2c3e50 0%, #3d5264 100%);
     color: white;
 }
 
@@ -567,22 +573,22 @@
 }
 
 .badge-success {
-    background: #27ae60;
+    background: #5a6c7d;
     color: white;
 }
 
 .badge-warning {
-    background: #f39c12;
+    background: #c0876f;
     color: white;
 }
 
 .badge-category {
-    background: var(--gradient-secondary);
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
     color: white;
 }
 
 .badge-info {
-    background: var(--gradient-accent);
+    background: linear-gradient(135deg, #c0876f 0%, #a97560 100%);
     color: white;
 }
 
@@ -699,18 +705,22 @@
 }
 
 .form-control {
-    padding: 0.8rem 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: var(--radius-md);
+    padding: 1rem 1.2rem;
+    border: 2px solid #dfe3e8;
+    border-radius: 10px;
     font-family: var(--font-primary);
-    font-size: 1rem;
-    transition: all var(--transition-fast);
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+    font-weight: 500;
 }
 
 .form-control:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), 0 4px 12px rgba(0,0,0,0.1);
+    background: white;
+    transform: translateY(-2px);
 }
 
 .form-help {
@@ -734,28 +744,33 @@
 /* Editor de texto */
 .editor-toolbar {
     display: flex;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    background: var(--bg-sidebar);
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    border: 2px solid #e0e0e0;
-    border-bottom: none;
+    gap: 0.7rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px 12px 0 0;
+    border: none;
     flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .editor-btn {
-    padding: 0.5rem 0.8rem;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: var(--radius-sm);
+    padding: 0.7rem 1.1rem;
+    background: rgba(255,255,255,0.95);
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all var(--transition-fast);
-    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #667eea;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .editor-btn:hover {
-    background: var(--primary-color);
-    color: white;
+    background: white;
+    color: #667eea;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
 .editor-separator {
@@ -847,4 +862,105 @@
         width: 100%;
         justify-content: center;
     }
+}
+
+/* Mejoras para el formulario de edicion */
+.admin-form {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.sidebar-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    padding: 1.8rem;
+    border-radius: 12px;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.sidebar-section:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.sidebar-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+}
+
+.info-box {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.info-box p {
+    margin-bottom: 0.7rem;
+    line-height: 1.6;
+}
+
+.info-box strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.editor-toolbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 0.8rem;
+    border-radius: 8px 8px 0 0;
+    border: none;
+}
+
+.editor-btn {
+    background: rgba(255,255,255,0.9);
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    color: #667eea;
+}
+
+.editor-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.form-actions-sticky button,
+.form-actions-sticky a {
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+}
+
+.form-actions-sticky button:hover,
+.form-actions-sticky a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }

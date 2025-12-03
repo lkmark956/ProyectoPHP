@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 /**
  * Editar usuario - Admin
  */
 
 require_once '../auth.php';
 
-use App\User;
-use App\ImageUpload;
+use App\Models\User;
+use App\Models\ImageUpload;
 
 requireRole('admin');
 
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Editar Usuario';
-include '../../../views/admin/header.php';
+include '../../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-page">
@@ -156,4 +156,4 @@ include '../../../views/admin/header.php';
     </form>
 </div>
 
-<?php include '../../../views/admin/footer.php'; ?>
+<?php include '../../../app/Views/admin/footer.php'; ?>

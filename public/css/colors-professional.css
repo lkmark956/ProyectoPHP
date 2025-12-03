@@ -1,0 +1,257 @@
+/* =====================================================
+   COLORES PROFESIONALES Y ELEGANTES
+   Para REVERTIR: simplemente elimina este archivo y quita
+   la referencia en header.php
+   ===================================================== */
+
+/* === PALETA DE COLORES PROFESIONALES === */
+:root {
+    /* Colores principales - tonos más serios */
+    --primary-color: #1a2332;
+    --primary-dark: #0f1419;
+    --primary-light: #2d3e50;
+    --accent-color: #8b7355;
+    --text-primary: #1a2332;
+    --text-secondary: #5a6c7d;
+    --text-light: #7c8b9a;
+    --bg-main: #f4f6f8;
+}
+
+/* === SOBRESCRIBIR COLORES === */
+
+/* Header más elegante */
+.site-header {
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%) !important;
+}
+
+/* Categorías con tonos profesionales */
+.post-category {
+    background: linear-gradient(135deg, #5a6c7d 0%, #7c8b9a 100%) !important;
+}
+
+/* Botones más serios */
+.btn-read-more {
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%) !important;
+}
+
+.btn-back,
+.btn-back-small {
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #2d3e50 100%) !important;
+}
+
+/* Sidebar más profesional */
+.category-link {
+    border-left: 4px solid #8b7355 !important;
+}
+
+.category-link:hover {
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%) !important;
+}
+
+.post-count {
+    background: #8b7355 !important;
+}
+
+/* Títulos con colores serios */
+.section-title,
+.category-title,
+.post-full-title {
+    color: #1a2332 !important;
+}
+
+/* Post completo */
+.post-full::before {
+    background: linear-gradient(90deg, #8b7355 0%, #1a2332 50%, #8b7355 100%) !important;
+}
+
+.post-full-title {
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #8b7355 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.post-category-badge {
+    background: linear-gradient(135deg, #5a6c7d 0%, #7c8b9a 100%) !important;
+}
+
+.post-views-badge {
+    border: 2px solid #8b7355 !important;
+    color: #8b7355 !important;
+}
+
+/* Links y acentos */
+.post-full-content a {
+    color: #8b7355 !important;
+}
+
+.post-full-content a:hover {
+    color: #1a2332 !important;
+}
+
+.post-full-content h2::after {
+    background: linear-gradient(90deg, #8b7355 0%, transparent 100%) !important;
+}
+
+.post-full-content h2 {
+    background: linear-gradient(135deg, #1a2332 0%, #8b7355 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.post-full-content blockquote {
+    border-left: 5px solid #8b7355 !important;
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.08) 0%, rgba(26, 35, 50, 0.04) 100%) !important;
+}
+
+.post-full-content blockquote::before {
+    color: #8b7355 !important;
+}
+
+/* Perfil y formularios */
+.profile-header::before,
+.page-header-user::before,
+.create-post-card::before {
+    background: linear-gradient(90deg, #8b7355 0%, #1a2332 50%, #8b7355 100%) !important;
+}
+
+.profile-header h1,
+.page-header-user h1 {
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #8b7355 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.profile-card::before,
+.sidebar-section::before {
+    background: linear-gradient(90deg, #8b7355, #1a2332) !important;
+}
+
+.profile-card:hover,
+.sidebar-section:hover {
+    border-color: #8b7355 !important;
+}
+
+.profile-card h2::after,
+.sidebar-section h3::after {
+    background: #8b7355 !important;
+}
+
+.avatar-large,
+.avatar-placeholder {
+    border: 5px solid #8b7355 !important;
+    box-shadow: 0 15px 50px rgba(139, 115, 85, 0.3) !important;
+}
+
+.avatar-placeholder {
+    background: linear-gradient(135deg, #1a2332 0%, #8b7355 100%) !important;
+}
+
+.form-control:focus,
+.form-input:focus,
+.form-textarea:focus {
+    border-color: #8b7355 !important;
+    box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.15) !important;
+}
+
+.file-label:hover {
+    border-color: #8b7355 !important;
+}
+
+.checkbox-label:hover {
+    border-color: #8b7355 !important;
+    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.2) !important;
+}
+
+.btn-link {
+    color: #8b7355 !important;
+}
+
+.btn-link:hover {
+    background: rgba(139, 115, 85, 0.1) !important;
+}
+
+/* Admin */
+.admin-form::before {
+    background: linear-gradient(90deg, #8b7355 0%, #1a2332 50%, #8b7355 100%) !important;
+}
+
+.editor-btn:hover {
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%) !important;
+    border-color: #1a2332 !important;
+}
+
+.current-image-preview a::after {
+    background: linear-gradient(180deg, transparent 0%, rgba(26, 35, 50, 0.9) 100%) !important;
+}
+
+/* Widget sidebar */
+.widget-title::after {
+    background: #1a2332 !important;
+}
+
+.sidebar-widget {
+    border: 2px solid rgba(26, 35, 50, 0.1) !important;
+}
+
+.sidebar-widget:hover {
+    border-color: #8b7355 !important;
+}
+
+/* Stats */
+.stat-box::before {
+    background: linear-gradient(90deg, #8b7355, #1a2332) !important;
+}
+
+/* Paginación */
+.pagination-link:hover,
+.pagination-link.active {
+    background: #1a2332 !important;
+    border-color: #1a2332 !important;
+}
+
+/* Category header */
+.category-header::before {
+    background: linear-gradient(90deg, #8b7355, #1a2332) !important;
+}
+
+.posts-count {
+    border: 2px solid #8b7355 !important;
+}
+
+/* Animaciones - Colores */
+.progress-bar {
+    background: linear-gradient(90deg, #8b7355 0%, #1a2332 50%, #8b7355 100%) !important;
+}
+
+/* Avatar header */
+.user-avatar-header,
+.user-icon-placeholder {
+    border: 2px solid #8b7355 !important;
+}
+
+.user-icon-placeholder {
+    background: #8b7355 !important;
+}
+
+/* Author placeholder */
+.author-avatar-placeholder,
+.author-avatar-placeholder-small {
+    background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%) !important;
+    border: 2px solid #2d3e50 !important;
+}
+
+.author-avatar-small {
+    border: 2px solid #2d3e50 !important;
+}
+
+/* Badges */
+.badge-info {
+    background: linear-gradient(135deg, #5a6c7d 0%, #7c8b9a 100%) !important;
+}

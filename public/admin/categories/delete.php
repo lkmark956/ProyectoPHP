@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 require_once '../auth.php';
-use App\Category;
+use App\Models\Category;
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Location: index.php');

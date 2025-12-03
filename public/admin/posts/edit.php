@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Editar post - Admin
  */
 
 require_once '../auth.php';
 
-use App\Post;
-use App\Category;
-use App\ImageUpload;
+use App\Models\Post;
+use App\Models\Category;
+use App\Models\ImageUpload;
 
 if (!canCreateContent()) {
     die('No tienes permisos para acceder a esta página');
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     if (empty($data['title'])) {
-        $error = 'El título es requerido';
+        $error = 'El Titulo es requerido';
     } elseif (empty($data['content'])) {
         $error = 'El contenido es requerido';
     } elseif (empty($error)) {
@@ -91,14 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Editar Post';
-include '../../../views/admin/header.php';
+include '../../../app/Views/admin/header.php';
 ?>
 
 <div class="admin-page">
     <div class="page-header">
         <h1>✏️ Editar Post</h1>
         <div class="header-actions">
-            <a href="../.. /post.php?id=<?= $postId ?>" class="btn btn-outline" target="_blank">👁️ Ver Post</a>
+            <a href="../../post.php?id=<?= $postId ?>" class="btn btn-outline" target="_blank">👁️ Ver Post</a>
             <a href="index.php" class="btn btn-secondary">← Volver</a>
         </div>
     </div>
@@ -113,7 +113,7 @@ include '../../../views/admin/header.php';
         <div class="form-grid">
             <div class="form-main">
                 <div class="form-group">
-                    <label for="title" class="form-label required">Título del Post</label>
+                    <label for="title" class="form-label required">Titulo del Post</label>
                     <input 
                         type="text" 
                         id="title" 
@@ -125,7 +125,7 @@ include '../../../views/admin/header.php';
                 </div>
 
                 <div class="form-group">
-                    <label for="description" class="form-label required">Descripción Breve</label>
+                    <label for="description" class="form-label required">Descripcion Breve</label>
                     <textarea 
                         id="description" 
                         name="description" 
@@ -144,8 +144,8 @@ include '../../../views/admin/header.php';
                         <button type="button" class="editor-btn" onclick="formatText('italic')" title="Cursiva"><em>I</em></button>
                         <button type="button" class="editor-btn" onclick="formatText('underline')" title="Subrayado"><u>U</u></button>
                         <span class="editor-separator">|</span>
-                        <button type="button" class="editor-btn" onclick="insertHeading(2)" title="Título">H2</button>
-                        <button type="button" class="editor-btn" onclick="insertHeading(3)" title="Subtítulo">H3</button>
+                        <button type="button" class="editor-btn" onclick="insertHeading(2)" title="Titulo">H2</button>
+                        <button type="button" class="editor-btn" onclick="insertHeading(3)" title="SubTitulo">H3</button>
                         <span class="editor-separator">|</span>
                         <button type="button" class="editor-btn" onclick="insertList('ul')" title="Lista">• Lista</button>
                         <button type="button" class="editor-btn" onclick="insertList('ol')" title="Lista numerada">1. Lista</button>
@@ -164,7 +164,7 @@ include '../../../views/admin/header.php';
 
             <div class="form-sidebar">
                 <div class="sidebar-section">
-                    <h3>Publicación</h3>
+                    <h3>Publicacion</h3>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
@@ -179,9 +179,9 @@ include '../../../views/admin/header.php';
                     </div>
 
                     <div class="form-group">
-                        <label for="category_id" class="form-label">Categoría</label>
+                        <label for="category_id" class="form-label">Categoria</label>
                         <select id="category_id" name="category_id" class="form-control">
-                            <option value="0">Sin categoría</option>
+                            <option value="0">Sin Categoria</option>
                             <?php foreach ($categories as $category): ?>
                                 <option value="<?= $category['id'] ?>" 
                                     <?= ($_POST['category_id'] == $category['id']) ? 'selected' : '' ?>>
@@ -204,10 +204,15 @@ include '../../../views/admin/header.php';
                     <h3>Imagen Destacada</h3>
                     
                     <?php if ($post['image']): ?>
-                        <div style="margin-bottom: 1rem;">
-                            <img src="../../uploads/posts/<?= htmlspecialchars($post['image']) ?>" 
-                                 alt="Imagen actual" 
-                                 style="max-width: 100%; border-radius: 8px;">
+                        <div class="current-image-preview" style="margin-bottom: 1rem;">
+                            <a href="../../uploads/posts/<?= htmlspecialchars($post['image']) ?>" target="_blank" title="Click para ver tamaño completo">
+                                <img src="../../uploads/posts/<?= htmlspecialchars($post['image']) ?>" 
+                                     alt="Imagen actual" 
+                                     style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; transition: transform 0.3s;" 
+                                     onmouseover="this.style.transform='scale(1.05)'" 
+                                     onmouseout="this.style.transform='scale(1)'">
+                            </a>
+                            <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 0.5rem; text-align: center;">Click para ver tamaño completo</p>
                         </div>
                         <button type="submit" name="delete_image" class="btn btn-danger btn-block" 
                                 onclick="return confirm('¿Eliminar esta imagen?')">
@@ -292,7 +297,7 @@ function insertHeading(level) {
     const textarea = document.getElementById('content');
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end) || 'Título aquí';
+    const selectedText = textarea.value.substring(start, end) || 'Titulo aquí';
     const heading = '<h' + level + '>' + selectedText + '</h' + level + '>\n';
     textarea.value = textarea.value.substring(0, start) + heading + textarea.value.substring(end);
     textarea.focus();
@@ -321,4 +326,4 @@ function insertLink() {
 }
 </script>
 
-<?php include '../../../views/admin/footer.php'; ?>
+<?php include '../../../app/Views/admin/footer.php'; ?>
