@@ -80,7 +80,9 @@ class Category {
         $stmt->bindValue(':slug', $this->generateSlug($data['name']));
         $stmt->bindValue(':description', trim($data['description'] ?? ''));
         
-        return $stmt->execute();
+        $result = $stmt->execute();
+        
+        return $result;
     }
     
     /**
@@ -90,7 +92,9 @@ class Category {
         $sql = "DELETE FROM categories WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $result = $stmt->execute();
+        
+        return $result;
     }
     
     /**

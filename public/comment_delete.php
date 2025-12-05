@@ -4,7 +4,7 @@
  */
 
 require_once '../config/config.php';
-session_start();
+// No es necesario session_start() aquí porque config.php ya lo hace
 
 use App\Models\Comment;
 use App\Models\Post;
@@ -33,7 +33,7 @@ $post = $postModel->getPostById($postId);
 // Verificar permisos
 if (!$commentModel->canDeleteComment($commentId, $_SESSION['user_id'], $_SESSION['role'], $post['author_id'] ?? null)) {
     $_SESSION['error'] = 'No tienes permiso para eliminar este comentario';
-    header('Location: post.php?id=' . $postId);
+    header('Location: ' . BASE_URL . '/post.php?id=' . $postId);
     exit;
 }
 
@@ -45,5 +45,5 @@ if ($result['success']) {
     $_SESSION['error'] = $result['message'];
 }
 
-header('Location: post.php?id=' . $postId . '#comments');
+header('Location: ' . BASE_URL . '/post.php?id=' . $postId . '#comments');
 exit;

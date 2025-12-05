@@ -54,7 +54,7 @@ include VIEWS_PATH . '/header.php';
                             <div class="post-content">
                                 <div class="post-header">
                                     <h2 class="post-title">
-                                        <a href="post.php?id=<?= htmlspecialchars($post['id']) ?>">
+                                        <a href="<?= BASE_URL ?>/post.php?id=<?= htmlspecialchars($post['id']) ?>">
                                             <?= htmlspecialchars($post['title']) ?>
                                         </a>
                                     </h2>
@@ -85,7 +85,7 @@ include VIEWS_PATH . '/header.php';
                                         <?php endif; ?>
                                         <span class="author-name"><?= htmlspecialchars($post['author_name']) ?></span>
                                     </div>
-                                    <a href="post.php?id=<?= htmlspecialchars($post['id']) ?>" class="btn-read-more">
+                                    <a href="<?= BASE_URL ?>/post.php?id=<?= htmlspecialchars($post['id']) ?>" class="btn-read-more">
                                         Leer mas →
                                     </a>
                                 </div>
@@ -98,8 +98,8 @@ include VIEWS_PATH . '/header.php';
                 <?php if ($totalPages > 1): ?>
                     <nav class="pagination">
                         <?php if ($currentPage > 1): ?>
-                            <a href="?page=1" class="pagination-link">« Primera</a>
-                            <a href="?page=<?= $currentPage - 1 ?>" class="pagination-link">‹ Anterior</a>
+                            <a href="<?= BASE_URL ?>/index.php?page=1" class="pagination-link">« Primera</a>
+                            <a href="<?= BASE_URL ?>/index.php?page=<?= $currentPage - 1 ?>" class="pagination-link">‹ Anterior</a>
                         <?php endif; ?>
                         
                         <?php
@@ -109,15 +109,15 @@ include VIEWS_PATH . '/header.php';
                         
                         for ($i = $start; $i <= $end; $i++):
                         ?>
-                            <a href="?page=<?= $i ?>" 
+                            <a href="<?= BASE_URL ?>/index.php?page=<?= $i ?>" 
                                class="pagination-link <?= $i === $currentPage ? 'active' : '' ?>">
                                 <?= $i ?>
                             </a>
                         <?php endfor; ?>
                         
                         <?php if ($currentPage < $totalPages): ?>
-                            <a href="?page=<?= $currentPage + 1 ?>" class="pagination-link">Siguiente ›</a>
-                            <a href="?page=<?= $totalPages ?>" class="pagination-link">Última »</a>
+                            <a href="<?= BASE_URL ?>/index.php?page=<?= $currentPage + 1 ?>" class="pagination-link">Siguiente ›</a>
+                            <a href="<?= BASE_URL ?>/index.php?page=<?= $totalPages ?>" class="pagination-link">Última »</a>
                         <?php endif; ?>
                     </nav>
                 <?php endif; ?>
@@ -132,7 +132,7 @@ include VIEWS_PATH . '/header.php';
                     <?php if (!empty($categories)): ?>
                         <?php foreach ($categories as $category): ?>
                             <li class="category-item">
-                                <a href="category.php?id=<?= htmlspecialchars($category['id']) ?>" class="category-link">
+                                <a href="<?= BASE_URL ?>/category.php?id=<?= htmlspecialchars($category['id']) ?>" class="category-link">
                                     <span class="category-name"><?= getCategoryEmoji($category) ?> <?= htmlspecialchars($category['name']) ?></span>
                                     <span class="post-count"><?= $category['post_count'] ?></span>
                                 </a>

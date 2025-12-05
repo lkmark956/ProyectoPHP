@@ -131,7 +131,9 @@ class Post {
         $stmt->bindValue(':description', trim($data['description']));
         $stmt->bindValue(':content', trim($data['content']));
         $stmt->bindValue(':image', $data['image'] ?? null);
-        $stmt->bindValue(':category_id', $data['category_id'], PDO::PARAM_INT);
+        // Si category_id es 0 o vacío, usar NULL para respetar foreign key
+        $categoryId = !empty($data['category_id']) ? $data['category_id'] : null;
+        $stmt->bindValue(':category_id', $categoryId, $categoryId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindValue(':author_id', $data['author_id'], PDO::PARAM_INT);
         $stmt->bindValue(':published', $data['published'] ?? 1, PDO::PARAM_INT);
         $stmt->execute();
@@ -175,10 +177,14 @@ class Post {
         if (isset($data['image'])) {
             $stmt->bindValue(':image', $data['image']);
         }
-        $stmt->bindValue(':category_id', $data['category_id'], PDO::PARAM_INT);
+        // Si category_id es 0 o vacío, usar NULL para respetar foreign key
+        $categoryId = !empty($data['category_id']) ? $data['category_id'] : null;
+        $stmt->bindValue(':category_id', $categoryId, $categoryId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindValue(':published', $data['published'] ?? 1, PDO::PARAM_INT);
         
-        return $stmt->execute();
+        $result = $stmt->execute();
+        
+        return $result;
     }
     
     /**
@@ -188,7 +194,9 @@ class Post {
         $sql = "DELETE FROM posts WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $result = $stmt->execute();
+        
+        return $result;
     }
     
     /**

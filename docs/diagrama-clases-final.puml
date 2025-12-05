@@ -1,0 +1,188 @@
+@startuml
+
+title Diagrama de Clases - Sistema CMS Blog PHP
+
+package "Core" {
+    class Database {
+        - {static} instance : Database
+        - connection : PDO
+        - __construct()
+        + {static} getInstance() : Database
+        + getConnection() : PDO
+        + testConnection() : bool
+        + closeConnection() : void
+    }
+    
+    abstract class Controller {
+        # view(viewPath, data) : void
+        # redirect(url) : void
+        # json(data, statusCode) : void
+        # requireAuth() : void
+        # requireRole(roles) : void
+        # get(key, default) : mixed
+        # post(key, default) : mixed
+        # session(key, default) : mixed
+        # setSession(key, value) : void
+        # flashMessage(type, message) : void
+        # upload(file, dir) : array
+    }
+    
+    class Router {
+        - routes : array
+        + get(path, callback) : void
+        + post(path, callback) : void
+        + run() : void
+        - convertToRegex(route) : string
+        - executeCallback(callback, matches) : void
+    }
+}
+
+package "Models" {
+    class User {
+        - db : PDO
+        + __construct()
+        + register(data) : array
+        + login(username, password) : array
+        + logout() : void
+        + getUserById(id) : array
+        + updateProfile(userId, data) : array
+        + changePassword(userId, currentPass, newPass) : array
+        + getAllUsers() : array
+        + deleteUser(id) : bool
+        - validateRegistration(data) : array
+        - userExists(username, email) : bool
+        - validateEmail(email) : bool
+        - validatePassword(password) : array
+    }
+    
+    class Post {
+        - db : PDO
+        + __construct()
+        + getAllPosts(page, perPage) : array
+        + getPostById(id) : array
+        + getPostBySlug(slug) : array
+        + createPost(data) : array
+        + updatePost(id, data) : array
+        + deletePost(id) : bool
+        + getTotalPosts() : int
+        + getPostsByAuthor(authorId) : array
+        + getPostsByCategory(categoryId, page, perPage) : array
+        + searchPosts(query) : array
+        - generateSlug(title) : string
+        - validatePost(data) : array
+    }
+    
+    class Category {
+        - db : PDO
+        + __construct()
+        + getAllCategories() : array
+        + getCategoriesWithPostCount() : array
+        + getCategoryById(id) : array
+        + getCategoryBySlug(slug) : array
+        + createCategory(name, slug, description) : array
+        + updateCategory(id, data) : array
+        + deleteCategory(id) : bool
+    }
+    
+    class Comment {
+        - db : PDO
+        + __construct()
+        + createComment(postId, userId, content) : array
+        + getCommentsByPost(postId) : array
+        + getCommentById(id) : array
+        + updateComment(id, content) : array
+        + deleteComment(id) : bool
+        + canEdit(commentId, userId) : bool
+        + canDelete(commentId, userId, userRole) : bool
+    }
+    
+    class ImageUpload {
+        - allowedTypes : array
+        - maxSize : int
+        - uploadDir : string
+        + __construct(uploadDir)
+        + upload(file) : array
+        + delete(filename) : bool
+        - validateFile(file) : array
+        - generateUniqueFilename(originalName) : string
+        - moveFile(tmpName, destination) : bool
+    }
+}
+
+package "Controllers" {
+    class HomeController {
+        - postModel : Post
+        - categoryModel : Category
+        + __construct()
+        + index() : void
+    }
+    
+    class PostController {
+        - postModel : Post
+        - categoryModel : Category
+        - commentModel : Comment
+        - imageUpload : ImageUpload
+        + __construct()
+        + show(slug) : void
+        + create() : void
+        + store() : void
+        + edit(id) : void
+        + update(id) : void
+        + delete(id) : void
+        + myPosts() : void
+    }
+    
+    class AuthController {
+        - userModel : User
+        + __construct()
+        + showLogin() : void
+        + login() : void
+        + showRegister() : void
+        + register() : void
+        + logout() : void
+    }
+    
+    class ProfileController {
+        - userModel : User
+        - imageUpload : ImageUpload
+        + __construct()
+        + show() : void
+        + update() : void
+        + changePassword() : void
+    }
+}
+
+Database <-- User
+Database <-- Post
+Database <-- Category
+Database <-- Comment
+
+Controller <|-- HomeController
+Controller <|-- PostController
+Controller <|-- AuthController
+Controller <|-- ProfileController
+
+HomeController --> Post
+HomeController --> Category
+
+PostController --> Post
+PostController --> Category
+PostController --> Comment
+PostController --> ImageUpload
+
+AuthController --> User
+
+ProfileController --> User
+ProfileController --> ImageUpload
+
+Post --> Category
+Post --> User
+Comment --> Post
+Comment --> User
+
+Router ..> HomeController
+Router ..> PostController
+Router ..> AuthController
+Router ..> ProfileController
+
+@enduml

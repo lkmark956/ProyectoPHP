@@ -1,0 +1,205 @@
+@startuml Diagrama de Clases Inicial - CMS Blog
+!define LIGHTBLUE #E3F2FD
+!define LIGHTGREEN #E8F5E9
+!define LIGHTYELLOW #FFF9C4
+!define LIGHTPINK #FCE4EC
+
+title Diagrama de Clases Inicial - Sistema CMS Blog PHP
+
+package "Core" <<Frame>> #LIGHTBLUE {
+    
+    class Database {
+        - {static} instance : Database
+        - connection : PDO
+        - __construct()
+        + {static} getInstance() : Database
+        + getConnection() : PDO
+        + testConnection() : bool
+        + closeConnection() : void
+    }
+    note right of Database
+        Patron Singleton
+        Conexion unica a BD
+    end note
+    
+    abstract class Controller {
+        # view(viewPath : string, data : array) : void
+        # redirect(url : string) : void
+        # json(data : array, statusCode : int) : void
+        # requireAuth() : void
+        # requireRole(roles : array) : void
+        # get(key : string, default) : mixed
+        # post(key : string, default) : mixed
+        # session(key : string, default) : mixed
+        # setSession(key : string, value) : void
+        # flashMessage(type : string, message : string) : void
+        # upload(file : array, dir : string) : array
+    }
+    note right of Controller
+        Clase base para
+        todos los controladores
+    end note
+    
+    class Router {
+        - routes : array
+        + get(path : string, callback) : void
+        + post(path : string, callback) : void
+        + run() : void
+        - convertToRegex(route : string) : string
+        - executeCallback(callback, matches : array) : void
+    }
+}
+
+package "Models" <<Frame>> #LIGHTGREEN {
+    
+    class User {
+        - db : PDO
+        + __construct()
+        + register(data : array) : array
+        + login(username : string, password : string) : array
+        + logout() : void
+        + getUserById(id : int) : array
+        + updateProfile(userId : int, data : array) : array
+        + changePassword(userId : int, currentPass : string, newPass : string) : array
+        + getAllUsers() : array
+        + deleteUser(id : int) : bool
+        - validateRegistration(data : array) : array
+        - userExists(username : string, email : string) : bool
+        - validateEmail(email : string) : bool
+        - validatePassword(password : string) : array
+    }
+    
+    class Post {
+        - db : PDO
+        + __construct()
+        + getAllPosts(page : int, perPage : int) : array
+        + getPostById(id : int) : array
+        + getPostBySlug(slug : string) : array
+        + createPost(data : array) : array
+        + updatePost(id : int, data : array) : array
+        + deletePost(id : int) : bool
+        + getTotalPosts() : int
+        + getPostsByAuthor(authorId : int) : array
+        + getPostsByCategory(categoryId : int) : array
+        + searchPosts(query : string) : array
+        - generateSlug(title : string) : string
+        - validatePost(data : array) : array
+    }
+    
+    class Category {
+        - db : PDO
+        + __construct()
+        + getAllCategories() : array
+        + getCategoriesWithPostCount() : array
+        + getCategoryById(id : int) : array
+        + getCategoryBySlug(slug : string) : array
+        + createCategory(name : string, slug : string, description : string) : array
+        + updateCategory(id : int, data : array) : array
+        + deleteCategory(id : int) : bool
+    }
+    
+    class Comment {
+        - db : PDO
+        + __construct()
+        + createComment(postId : int, userId : int, content : string) : array
+        + getCommentsByPost(postId : int) : array
+        + updateComment(id : int, content : string) : array
+        + deleteComment(id : int) : bool
+        + canEdit(commentId : int, userId : int) : bool
+        + canDelete(commentId : int, userId : int, userRole : string) : bool
+    }
+    
+    class ImageUpload {
+        - allowedTypes : array
+        - maxSize : int
+        - uploadDir : string
+        + __construct(uploadDir : string)
+        + upload(file : array) : array
+        + delete(filename : string) : bool
+        - validateFile(file : array) : array
+        - generateUniqueFilename(originalName : string) : string
+        - moveFile(tmpName : string, destination : string) : bool
+    }
+}
+
+package "Controllers" <<Frame>> #LIGHTYELLOW {
+    
+    class HomeController {
+        - postModel : Post
+        - categoryModel : Category
+        + __construct()
+        + index() : void
+    }
+    
+    class PostController {
+        - postModel : Post
+        - categoryModel : Category
+        - commentModel : Comment
+        + __construct()
+        + show(slug : string) : void
+        + create() : void
+        + store() : void
+        + edit(id : int) : void
+        + update(id : int) : void
+        + delete(id : int) : void
+    }
+    
+    class AuthController {
+        - userModel : User
+        + __construct()
+        + showLogin() : void
+        + login() : void
+        + showRegister() : void
+        + register() : void
+        + logout() : void
+    }
+    
+    class ProfileController {
+        - userModel : User
+        + __construct()
+        + show() : void
+        + update() : void
+        + changePassword() : void
+    }
+}
+
+' Relaciones entre clases
+
+' Database con Models
+Database "1" <-- "1" User : usa
+Database "1" <-- "1" Post : usa
+Database "1" <-- "1" Category : usa
+Database "1" <-- "1" Comment : usa
+
+' Controller con Controllers
+Controller <|-- HomeController : hereda
+Controller <|-- PostController : hereda
+Controller <|-- AuthController : hereda
+Controller <|-- ProfileController : hereda
+
+' Controllers con Models
+HomeController --> Post : usa
+HomeController --> Category : usa
+PostController --> Post : usa
+PostController --> Category : usa
+PostController --> Comment : usa
+AuthController --> User : usa
+ProfileController --> User : usa
+
+' Relaciones entre Models
+Post --> Category : tiene
+Post --> User : tiene autor
+Comment --> Post : pertenece a
+Comment --> User : tiene autor
+
+' ImageUpload
+PostController --> ImageUpload : usa
+ProfileController --> ImageUpload : usa
+
+note bottom of Router
+    Sistema de enrutamiento
+    que conecta URLs con
+    controladores y acciones
+end note
+
+@enduml

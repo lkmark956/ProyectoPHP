@@ -18,9 +18,10 @@ define('PUBLIC_PATH', ROOT_PATH . '/public');
 define('VIEWS_PATH', ROOT_PATH . '/app/Views');
 define('UPLOADS_PATH', PUBLIC_PATH . '/uploads');
 
-// URL base del proyecto (sin /public porque index.php ya está en public)
-define('BASE_URL', 'http://localhost:3000/public');
-define('SITE_URL', 'http://localhost:3000/public'); // URL completa
+// URL base del proyecto
+// El servidor corre desde la raíz del workspace, no desde /public
+define('BASE_URL', 'http://localhost:3000/ProyectoPHP/public');
+define('SITE_URL', 'http://localhost:3000/ProyectoPHP/public');
 
 // Configuración de la aplicación
 define('SITE_NAME', 'CMS Blog Personal');

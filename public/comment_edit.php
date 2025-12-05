@@ -4,7 +4,7 @@
  */
 
 require_once '../config/config.php';
-session_start();
+// No es necesario session_start() aquí porque config.php ya lo hace
 
 use App\Models\Comment;
 
@@ -25,7 +25,7 @@ $content = $_POST['content'] ?? '';
 
 if (!$commentId || !$postId || empty($content)) {
     $_SESSION['error'] = 'Datos inválidos';
-    header('Location: post.php?id=' . $postId);
+    header('Location: ' . BASE_URL . '/post.php?id=' . $postId);
     exit;
 }
 
@@ -34,7 +34,7 @@ $commentModel = new Comment();
 // Verificar permisos
 if (!$commentModel->canEditComment($commentId, $_SESSION['user_id'], $_SESSION['role'])) {
     $_SESSION['error'] = 'No tienes permiso para editar este comentario';
-    header('Location: post.php?id=' . $postId);
+    header('Location: ' . BASE_URL . '/post.php?id=' . $postId);
     exit;
 }
 
@@ -46,5 +46,5 @@ if ($result['success']) {
     $_SESSION['error'] = $result['message'];
 }
 
-header('Location: post.php?id=' . $postId . '#comment-' . $commentId);
+header('Location: ' . BASE_URL . '/post.php?id=' . $postId . '#comment-' . $commentId);
 exit;

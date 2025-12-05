@@ -132,7 +132,7 @@ include VIEWS_PATH . '/header.php';
                 <!-- Formulario para crear comentario -->
                 <div class="comment-form-container">
                     <h3>✍️ Deja tu comentario</h3>
-                    <form action="comment_create.php" method="POST" class="comment-form">
+                    <form action="<?= BASE_URL ?>/comment_create.php" method="POST" class="comment-form">
                         <input type="hidden" name="post_id" value="<?= $postId ?>">
                         <textarea name="content" rows="4" placeholder="Escribe tu comentario..." required></textarea>
                         <button type="submit" class="btn btn-primary">Publicar Comentario</button>
@@ -205,7 +205,7 @@ include VIEWS_PATH . '/header.php';
                                                 <button onclick="toggleEditComment(<?= $comment['id'] ?>)" class="btn-comment-action">✏️ Editar</button>
                                             <?php endif; ?>
                                             <?php if ($canDelete): ?>
-                                                <a href="comment_delete.php?id=<?= $comment['id'] ?>&post_id=<?= $postId ?>" 
+                                                <a href="<?= BASE_URL ?>/comment_delete.php?id=<?= $comment['id'] ?>&post_id=<?= $postId ?>" 
                                                    class="btn-comment-action btn-delete"
                                                    onclick="return confirm('¿Eliminar este comentario?')">🗑️ Eliminar</a>
                                             <?php endif; ?>
@@ -220,7 +220,7 @@ include VIEWS_PATH . '/header.php';
                                 </div>
                                 
                                 <?php if ($canEdit ?? false): ?>
-                                    <form action="comment_edit.php" method="POST" class="comment-edit-form" id="comment-edit-<?= $comment['id'] ?>" style="display: none;">
+                                    <form action="<?= BASE_URL ?>/comment_edit.php" method="POST" class="comment-edit-form" id="comment-edit-<?= $comment['id'] ?>" style="display: none;">
                                         <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
                                         <input type="hidden" name="post_id" value="<?= $postId ?>">
                                         <textarea name="content" rows="3" required><?= htmlspecialchars($comment['content']) ?></textarea>
